@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en" class="lenis lenis-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hogwarts | Enchanted Experience</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
+
+    <style>
+        /* Required Lenis CSS for Buttery Scrolling */
+        html.lenis, html.lenis body { height: auto; width: 100vw; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+        .lenis.lenis-smooth iframe { pointer-events: none; }
+
+        /* Custom Tongari Font */
+        @font-face {
+            font-family: 'Tongari';
+            src: url('assets/Tongari.woff2') format('woff2'),
+                 url('assets/Tongari.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        .font-harry { font-family: 'Tongari', serif; }
+
+        /* Cinematic 3D Gold Text Effect */
+        .cinematic-gold-text {
+            background: linear-gradient(to bottom, #FFFFEA 0%, #E6C259 25%, #D4AF37 50%, #7B5B19 75%, #382402 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-stroke: 1.5px rgba(212, 175, 55, 0.6);
+            filter: drop-shadow(0px -2px 2px rgba(255, 255, 255, 0.4)) drop-shadow(0px 12px 20px rgba(0, 0, 0, 0.9));
+        }
+        .cinematic-gold-text-sm {
+            background: linear-gradient(to bottom, #FFFFEA 0%, #E6C259 30%, #D4AF37 60%, #4A3305 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-stroke: 0.5px rgba(212, 175, 55, 0.5);
+            filter: drop-shadow(0px -1px 1px rgba(255, 255, 255, 0.3)) drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.8));
+        }
+
+        /* BASE RESETS AND VIEWPORT LOCK */
+        body, html { 
+            margin: 0; padding: 0; 
+            background-color: #050505; color: #E2E8F0; 
+            font-family: 'Cinzel', serif; 
+            overflow-x: hidden; width: 100%; max-width: 100vw; 
+            min-height: 100vh; 
+        }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { display: none; }
+        * { scrollbar-width: none; }
+        
+        /* Glassmorphism System */
+        .magic-glass {
+            background: linear-gradient(135deg, rgba(16, 20, 28, 0.75), rgba(10, 12, 18, 0.9));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-top: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), inset 0 1px 0 rgba(212,175,55,0.15);
+        }
+        .light-magic-glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Navigation Animations */
+        .nav-link { position: relative; color: #D1D5DB; transition: color 0.3s ease, opacity 0.3s ease; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.15em; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+        .nav-link:hover, .nav-link.active { color: #D4AF37; text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%) scale(0);
+            width: 4px; height: 4px; border-radius: 50%; background-color: #D4AF37; box-shadow: 0 0 10px #D4AF37; transition: transform 0.3s ease;
+            z-index: 30; pointer-events: none;
+        }
+        .nav-link:hover::after, .nav-link.active::after { transform: translateX(-50%) scale(1); }
+
+        .btn-magic {
+            background-color: #740001; color: #F4E8C1; border: 2px solid #4A3018; transition: all 0.3s ease;
+            font-family: 'Cinzel', serif; letter-spacing: 3px; text-transform: uppercase; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .btn-magic:hover { background-color: #5A0001; box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 6px 20px rgba(0,0,0,0.5); transform: translateY(-2px); }
+        .btn-magic:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+        /* Glowing Text Effect */
+        .text-glow { animation: pulseGlow 4s ease-in-out infinite; }
+        @keyframes pulseGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.15); }
+            50% { text-shadow: 0 0 25px rgba(212, 175, 55, 0.4); }
+        }
+
+        /* Golden Snitch Animations */
+        #snitch { position: fixed; width: 24px; height: 24px; pointer-events: none; z-index: 100; transition: transform 0.15s ease-out; will-change: transform; }
+        .snitch-body { position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, #FFF5C3, #D4AF37); border-radius: 50%; box-shadow: 0 0 15px #D4AF37, inset 0 0 8px rgba(255,255,255,0.8); z-index: 2; }
+        .snitch-wing { position: absolute; top: 20%; width: 40px; height: 10px; background: rgba(255, 255, 255, 0.95); border: 2px solid #D4AF37; box-shadow: 0 0 15px #D4AF37; z-index: 1; }
+        .wing-l { right: 80%; transform-origin: right center; border-radius: 100% 0 100% 0; animation: flapL 0.05s infinite alternate; }
+        .wing-r { left: 80%; transform-origin: left center; border-radius: 0 100% 0 100%; animation: flapR 0.05s infinite alternate; }
+        @keyframes flapL { from { transform: rotate(20deg); } to { transform: rotate(-50deg); } }
+        @keyframes flapR { from { transform: rotate(-20deg); } to { transform: rotate(50deg); } }
+        
+        .snitch-popup { position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%) translateY(10px) scale(0.8); opacity: 0; background: rgba(5,5,5,0.85); border: 1px solid #D4AF37; color: #D4AF37; font-family: 'Cinzel', serif; font-size: 10px; padding: 4px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 15px rgba(212,175,55,0.3); font-weight: bold; }
+        .snitch-popup.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+        
+        .sparkle { position: fixed; border-radius: 50%; pointer-events: none; z-index: 99; animation: fadeOut 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; mix-blend-mode: color-dodge; }
+        @keyframes fadeOut { 
+            0% { opacity: 1; transform: scale(1) translateY(0); } 
+            100% { opacity: 0; transform: scale(0) translateY(60px); } 
+        }
+
+        /* Magical Portrait Gallery */
+        .gallery-item { 
+            position: relative; overflow: hidden; border: 6px solid #5A3A18; border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6); cursor: pointer; transform: scale(0.95) rotate(var(--tilt, 0deg)) skewY(var(--skew-y, 0deg));
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); background: #1a0f0a; aspect-ratio: 3/4;
+        }
+        .gallery-item.active, .gallery-item:hover { 
+            transform: scale(1.05) translateY(-10px) rotate(0deg) skewY(var(--skew-y, 0deg)); border-color: #D4AF37;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9), 0 0 25px rgba(212,175,55,0.4); z-index: 10;
+        }
+        .gallery-item img { 
+            width: 100%; height: 100%; object-fit: cover; filter: sepia(0.6) contrast(1.2) brightness(0.6);
+            transition: filter 0.6s ease, transform 0.6s ease;
+        }
+        .gallery-item.active img, .gallery-item:hover img { filter: sepia(0) contrast(1.1) brightness(1); transform: scale(1.05); }
+        .gallery-overlay { position: absolute; inset: 0; background: linear-gradient(to top, #050505 0%, transparent 60%); opacity: 0.8; transition: all 0.6s; pointer-events: none; }
+        .gallery-item.active .gallery-overlay, .gallery-item:hover .gallery-overlay { opacity: 1; background: linear-gradient(to top, rgba(116,0,1,0.9) 0%, transparent 60%); }
+        .gallery-info { position: absolute; bottom: 30px; left: 0; right: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.16,1,0.3,1); text-align: center; padding: 0 20px; }
+        .gallery-item.active .gallery-info, .gallery-item:hover .gallery-info { transform: translateY(0); }
+
+        /* Merch Item Hover */
+        .merch-item::after {
+            content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 0%, rgba(212,175,55,0.15) 50%, rgba(0,0,0,0.8) 100%);
+            opacity: 0; transition: opacity 0.7s ease; mix-blend-mode: color-dodge; pointer-events: none;
+        }
+        .merch-item:hover::after { opacity: 1; animation: pulseGlow 3s infinite alternate; }
+
+        /* Hero Magical Elements */
+        .hero-particle { 
+            position: absolute; border-radius: 50%; pointer-events: none; opacity: 0; 
+            will-change: transform, opacity; 
+        }
+        @keyframes floatParticle {
+            0% { opacity: 0; transform: translateY(0) scale(0); }
+            15% { opacity: 1; transform: translateY(-20px) scale(1); }
+            85% { opacity: 0.6; }
+            100% { opacity: 0; transform: translateY(-120px) scale(0.3); }
+        }
+        @keyframes deathlyGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(212,175,55,0.3)); }
+            50% { filter: drop-shadow(0 0 25px rgba(212,175,55,0.7)); }
+        }
+        @keyframes floatOrb {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            25% { transform: translateY(-20px) translateX(10px); }
+            50% { transform: translateY(-5px) translateX(-8px); }
+            75% { transform: translateY(-15px) translateX(5px); }
+        }
+        @keyframes scarFlicker {
+            0%, 90%, 100% { opacity: 0.6; filter: drop-shadow(0 0 3px #D4AF37); }
+            93% { opacity: 1; filter: drop-shadow(0 0 15px #D4AF37) drop-shadow(0 0 30px rgba(212,175,55,0.6)); }
+            96% { opacity: 0.4; filter: drop-shadow(0 0 5px #D4AF37); }
+        }
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(10px); opacity: 1; }
+        }
+        @keyframes titleOpacityRise {
+            0% { opacity: 0; filter: blur(8px); }
+            100% { opacity: 1; filter: blur(0px); }
+        }
+
+        /* Animation Performance Optimization */
+        [data-speed], [data-lag] {
+            will-change: transform;
+        }
+
+        /* Music Button Animations */
+        #music-icon { animation: musicPulse 1.5s ease-in-out infinite; }
+        #music-btn.muted #music-icon { animation: none; opacity: 0.4; }
+        #music-btn.muted #music-label { opacity: 0.4; }
+
+        /* Hogwarts Express Magic Sparkles */
+        .magic-particle {
+            width: 40px; height: 40px;
+            background: radial-gradient(circle, rgba(228, 194, 89, 0.7) 0%, transparent 60%);
+            border-radius: 50%;
+            filter: blur(5px);
+            opacity: 0;
+            animation: magicRise var(--dur) infinite ease-in-out var(--delay);
+            box-shadow: 0 0 10px rgba(228, 194, 89, 0.8), 0 0 20px rgba(212, 175, 55, 0.6);
+        }
+        @keyframes magicRise {
+            0% { transform: translateY(20px) translateX(0) scale(0.3); opacity: 0; }
+            25% { opacity: 1; transform: scale(1); }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-140px) translateX(var(--x)) scale(0.1); opacity: 0; }
+        }
+
+        /* Ticket 3D Hover Effect */
+        .ticket-3d-effect {
+            transform-style: preserve-3d;
+            transform: rotateY(-15deg) rotateX(10deg);
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .ticket-3d-effect:hover {
+                transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+            }
+        }
+
+        /* Alliance Section */
+        .house-card {
+            box-shadow: 0 15px 35px -5px rgba(0,0,0,0.5);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 12px;
+            cursor: pointer;
+            will-change: transform, box-shadow, border-color;
+            transform: rotate(var(--tilt, 0deg));
+        }
+        .house-card:hover, .house-card.touch-hover { 
+            transform: translateY(-12px) rotate(0deg); 
+            box-shadow: 0 25px 50px -10px rgba(0,0,0,0.7), 0 0 25px var(--house-color-1, rgba(255, 255, 255, 0.1));
+        }
+        @media (hover: none) {
+            .house-card.touch-hover > img:first-of-type { transform: scale(1.1); }
+            .house-card.touch-hover .opacity-0.group-hover\:opacity-20 { opacity: 0.2; }
+            .house-card.touch-hover img.object-contain { transform: scale(1.1) rotate(-5deg); }
+            .house-card.touch-hover .foil-sweep { opacity: 0.4; }
+            
+            .movie-card.touch-hover > div:first-child > img { transform: scale(1.25); opacity: 0.4; }
+            .movie-card.touch-hover .group\/poster > div.opacity-0 { opacity: 1; }
+            .movie-card.touch-hover .group\/poster > div.overflow-hidden { transform: scale(1.02); }
+            .movie-card.touch-hover .group\/poster .poster-parallax img { transform: scale(1.1); }
+            
+            .ticket-3d-effect.touch-hover { transform: rotateY(0deg) rotateX(0deg) scale(1.05); }
+        }
+        #hall-of-members-btn:hover {
+            --glow-color: #D4AF37;
+            border-color: var(--glow-color);
+            box-shadow: 0 0 25px var(--glow-color);
+        }
+        @keyframes point-right {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+        }
+        .pointing-arrow {
+            animation: point-right 1.2s ease-in-out infinite;
+            color: #D4AF37;
+        }
+        @keyframes foilSweep {
+            0% { background-position: 200% 0; }
+            100% { background-position: -100% 0; }
+        }
+        .foil-sweep { background-size: 200% 100%; animation: foilSweep 3s linear infinite; }
+
+        /* Accessibility: Respect user preference for reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .lenis.lenis-smooth { scroll-behavior: auto !important; }
+            #snitch, .hero-particle, .sparkle, .magic-particle { display: none !important; }
+            .pointing-arrow { animation: none; }
+            .ticket-3d-effect, .house-card, .gallery-item, .merch-item-stack { transform: none !important; }
+        }
+    </style>
+</head>
+<body>
+    
+    <audio id="bg-music" src="assets/HARRY.mp3" loop preload="auto"></audio>
+
+    <button id="music-btn" title="Toggle Music" aria-label="Toggle Music" class="fixed bottom-6 right-6 z-[9998] btn-magic flex items-center justify-center w-12 h-12 rounded-full cursor-pointer">
+        <span id="music-icon" class="text-lg">♪</span>
+        <span id="music-label" class="hidden">MUSIC</span>
+    </button>
+
+        <a href="#houses" class="fixed bottom-6 left-4 sm:left-6 z-[50] btn-magic inline-flex items-center justify-center gap-2 font-bold text-[10px] sm:text-xs px-5 py-3 md:px-6 md:py-3.5 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+            <i data-lucide="shield-check" class="w-4 h-4"></i> <span class="hidden sm:inline">Join Alliance</span><span class="sm:hidden">Join</span>
+        </a>
+
+    <div id="music-reminder" class="fixed bottom-20 right-6 z-[9997] magic-glass px-3 py-2 rounded-full flex items-center gap-2 transform translate-y-4 opacity-0 pointer-events-none transition-all duration-500 cursor-pointer hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+        <i data-lucide="volume-x" class="w-3 h-3 text-[#D4AF37]"></i>
+        <span class="font-montserrat text-white text-[8px] tracking-[1px] uppercase font-bold">Turn on music</span>
+    </div>
+
+    <div id="global-bg-wrapper" class="fixed inset-0 z-0 pointer-events-none" style="isolation: isolate;">
+        <img id="global-bg-img" src="assets/HARRY.jpg" alt="Bg" class="absolute inset-0 w-full h-full object-cover opacity-[0.85] will-change-transform transform-gpu" style="image-rendering: high-quality; filter: contrast(1.1) brightness(0.85);">
+        <div class="absolute inset-0 backdrop-blur-2xl bg-[#050505]/40 bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(0,0,0,0.95)_100%)] shadow-[inset_0_0_150px_rgba(0,0,0,1)] border-b border-white/5"></div>
+        <canvas id="lightning-canvas" class="absolute inset-0 w-full h-full opacity-40 mix-blend-screen"></canvas>
+    </div>
+
+    <div id="snitch">
+        <div class="snitch-body"></div>
+        <div class="snitch-wing wing-l"></div>
+        <div class="snitch-wing wing-r"></div>
+        <div class="snitch-popup">CATCH ME IF YOU CAN !!</div>
+    </div>
+
+
+    <nav id="main-nav" class="fixed top-6 left-0 right-0 z-[60] px-4 lg:px-12 flex justify-between lg:justify-center items-center max-w-7xl mx-auto">
+        <a href="#hero" class="lg:hidden bg-white/10 backdrop-blur-md border border-white/30 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-white/60 hover:bg-white/20 transition-all duration-300 rounded-full px-5 py-2.5 flex items-center">
+            <span class="font-montserrat text-white font-bold tracking-[0.2em] text-sm uppercase">HOGWARTS</span>
+        </a>
+
+        <div class="magic-glass rounded-full hidden lg:flex items-center px-4 py-2 gap-2">
+            <div class="flowing-item relative overflow-hidden rounded-full cursor-pointer" data-img="assets/HARRY.jpg">
+                <a href="#hero" class="nav-link active relative z-10 w-full h-full flex items-center justify-center px-4 py-2.5">
+                    <span class="nav-text transition-opacity duration-300">Great Hall</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-full overflow-hidden">
+                    <div class="marquee-inner flex h-full w-max items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item relative overflow-hidden rounded-full cursor-pointer" data-img="assets/HARRY.jpg">
+                <a href="#station" class="nav-link relative z-10 w-full h-full flex items-center justify-center px-4 py-2.5">
+                    <span class="nav-text transition-opacity duration-300">Platform 9¾</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-full overflow-hidden">
+                    <div class="marquee-inner flex h-full w-max items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item relative overflow-hidden rounded-full cursor-pointer" data-img="assets/sorcerers-stone.jpg">
+                <a href="#gallery" class="nav-link relative z-10 w-full h-full flex items-center justify-center px-4 py-2.5">
+                    <span class="nav-text transition-opacity duration-300">Characters</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-full overflow-hidden">
+                    <div class="marquee-inner flex h-full w-max items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item relative overflow-hidden rounded-full cursor-pointer" data-img="assets/gryffindor.jpg">
+                <a href="#houses" class="nav-link relative z-10 w-full h-full flex items-center justify-center px-4 py-2.5">
+                    <span class="nav-text transition-opacity duration-300">The Houses</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-full overflow-hidden">
+                    <div class="marquee-inner flex h-full w-max items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item relative overflow-hidden rounded-full cursor-pointer" data-img="assets/chamber-of-secrets.jpg">
+                <a href="#movies" class="nav-link relative z-10 w-full h-full flex items-center justify-center px-4 py-2.5">
+                    <span class="nav-text transition-opacity duration-300">Chronicles</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-full overflow-hidden">
+                    <div class="marquee-inner flex h-full w-max items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item relative overflow-hidden rounded-full cursor-pointer" data-img="assets/time.jpg">
+                <a href="#vault" class="nav-link relative z-10 w-full h-full flex items-center justify-center px-4 py-2.5">
+                    <span class="nav-text transition-opacity duration-300">The Vault</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-full overflow-hidden">
+                    <div class="marquee-inner flex h-full w-max items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item relative overflow-hidden rounded-full cursor-pointer" data-img="assets/goblet-of-fire.jpg">
+                <a href="#footer" class="nav-link relative z-10 w-full h-full flex items-center justify-center px-4 py-2.5">
+                    <span class="nav-text transition-opacity duration-300">About</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-full overflow-hidden">
+                    <div class="marquee-inner flex h-full w-max items-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <button id="mobile-menu-btn" class="lg:hidden bg-white/10 backdrop-blur-md border border-white/30 shadow-[0_4px_20px_rgba(0,0,0,0.2)] p-3 rounded-full text-white hover:bg-white/20 hover:border-white/60 transition-all duration-300">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Nav height fix 100dvh instead of 100vh -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 h-[100dvh] bg-[#050505]/98 backdrop-blur-2xl z-[55] opacity-0 pointer-events-none transition-opacity duration-500 flex flex-col items-center justify-center py-10">
+        <div class="flex flex-col w-full h-auto max-h-[75vh] overflow-y-auto max-w-2xl px-6 m-0 gap-3 scrollbar-thin">
+            <!-- Mobile Menu Items Omitted for Brevity (They are the same as original) -->
+             <div class="flowing-item flex-1 min-h-[50px] sm:min-h-[60px] flex-shrink-0 relative overflow-hidden text-center rounded-2xl magic-glass border-white/10" data-img="assets/HARRY.jpg">
+                <a href="#hero" class="mobile-nav-link flex items-center justify-center h-full w-full relative z-10 cursor-pointer uppercase no-underline font-cinzel text-xl text-white tracking-[0.2em] transition-opacity">
+                    <span class="nav-text transition-opacity duration-300">Great Hall</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-2xl overflow-hidden">
+                    <div class="marquee-inner h-full w-max flex items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item flex-1 min-h-[50px] sm:min-h-[60px] flex-shrink-0 relative overflow-hidden text-center rounded-2xl magic-glass border-white/10" data-img="assets/HARRY.jpg">
+                <a href="#station" class="mobile-nav-link flex items-center justify-center h-full w-full relative z-10 cursor-pointer uppercase no-underline font-cinzel text-xl text-gray-400 hover:text-white tracking-[0.2em] transition-opacity">
+                    <span class="nav-text transition-opacity duration-300">Platform 9¾</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-2xl overflow-hidden">
+                    <div class="marquee-inner h-full w-max flex items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item flex-1 min-h-[50px] sm:min-h-[60px] flex-shrink-0 relative overflow-hidden text-center rounded-2xl magic-glass border-white/10" data-img="assets/sorcerers-stone.jpg">
+                <a href="#gallery" class="mobile-nav-link flex items-center justify-center h-full w-full relative z-10 cursor-pointer uppercase no-underline font-cinzel text-xl text-gray-400 hover:text-white tracking-[0.2em] transition-opacity">
+                    <span class="nav-text transition-opacity duration-300">Characters</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-2xl overflow-hidden">
+                    <div class="marquee-inner h-full w-max flex items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item flex-1 min-h-[50px] sm:min-h-[60px] flex-shrink-0 relative overflow-hidden text-center rounded-2xl magic-glass border-white/10" data-img="assets/gryffindor.jpg">
+                <a href="#houses" class="mobile-nav-link flex items-center justify-center h-full w-full relative z-10 cursor-pointer uppercase no-underline font-cinzel text-xl text-gray-400 hover:text-white tracking-[0.2em] transition-opacity">
+                    <span class="nav-text transition-opacity duration-300">The Houses</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-2xl overflow-hidden">
+                    <div class="marquee-inner h-full w-max flex items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item flex-1 min-h-[50px] sm:min-h-[60px] flex-shrink-0 relative overflow-hidden text-center rounded-2xl magic-glass border-white/10" data-img="assets/chamber-of-secrets.jpg">
+                <a href="#movies" class="mobile-nav-link flex items-center justify-center h-full w-full relative z-10 cursor-pointer uppercase no-underline font-cinzel text-xl text-gray-400 hover:text-white tracking-[0.2em] transition-opacity">
+                    <span class="nav-text transition-opacity duration-300">Chronicles</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-2xl overflow-hidden">
+                    <div class="marquee-inner h-full w-max flex items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item flex-1 min-h-[50px] sm:min-h-[60px] flex-shrink-0 relative overflow-hidden text-center rounded-2xl magic-glass border-white/10" data-img="assets/time.jpg">
+                <a href="#vault" class="mobile-nav-link flex items-center justify-center h-full w-full relative z-10 cursor-pointer uppercase no-underline font-cinzel text-xl text-gray-400 hover:text-white tracking-[0.2em] transition-opacity">
+                    <span class="nav-text transition-opacity duration-300">The Vault</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-2xl overflow-hidden">
+                    <div class="marquee-inner h-full w-max flex items-center"></div>
+                </div>
+            </div>
+            <div class="flowing-item flex-1 min-h-[50px] sm:min-h-[60px] flex-shrink-0 relative overflow-hidden text-center rounded-2xl magic-glass border-white/10" data-img="assets/goblet-of-fire.jpg">
+                <a href="#footer" class="mobile-nav-link flex items-center justify-center h-full w-full relative z-10 cursor-pointer uppercase no-underline font-cinzel text-xl text-gray-400 hover:text-white tracking-[0.2em] transition-opacity">
+                    <span class="nav-text transition-opacity duration-300">About</span>
+                </a>
+                <div class="flowing-marquee absolute top-0 left-0 w-full h-full pointer-events-none translate-y-[101%] bg-[#D4AF37] z-20 flex items-center rounded-2xl overflow-hidden">
+                    <div class="marquee-inner h-full w-max flex items-center"></div>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-16 opacity-50 flex flex-col items-center gap-3">
+            <svg width="20" height="35" viewBox="0 0 28 50" fill="none"><path d="M16 0L6 20H14L4 50L24 22H14L24 0H16Z" fill="#FFFFFF"/></svg>
+            <span class="font-montserrat text-white tracking-[0.3em] text-[10px] uppercase font-bold">Hogwarts</span>
+        </div>
+    </div>
+
+    <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden">
+        <div id="hero-particles" class="absolute inset-0 pointer-events-none z-0"></div>
+        <div class="absolute top-[15%] left-[10%] w-40 h-40 bg-white/10 rounded-full blur-[80px] pointer-events-none" style="animation: floatOrb 8s ease-in-out infinite;" data-speed="1.25"></div>
+        <div class="absolute bottom-[20%] right-[8%] w-56 h-56 bg-white/8 rounded-full blur-[100px] pointer-events-none" style="animation: floatOrb 10s ease-in-out infinite 2s;" data-speed="0.8"></div>
+        <div class="absolute top-[40%] right-[20%] w-24 h-24 bg-white/5 rounded-full blur-[60px] pointer-events-none" style="animation: floatOrb 7s ease-in-out infinite 4s;" data-speed="1.15"></div>
+
+        <div class="relative z-10 flex flex-col items-center">
+            <div class="mb-6" style="animation: scarFlicker 5s ease-in-out infinite;">
+                <svg width="28" height="50" viewBox="0 0 28 50" fill="none">
+                    <path d="M16 0L6 20H14L4 50L24 22H14L24 0H16Z" fill="#FFFFFF" opacity="0.9"/>
+                </svg>
+            </div>
+            <p class="hero-anim-p text-white tracking-[0.2em] sm:tracking-[0.5em] text-[8px] sm:text-[10px] md:text-xs uppercase mb-8 text-glow font-bold opacity-90">Draco Dormiens Nunquam Titillandus</p>
+            <div class="relative">
+                <svg class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[400px] md:h-[400px] opacity-[0.06] pointer-events-none" viewBox="0 0 200 200" style="animation: deathlyGlow 4s ease-in-out infinite;">
+                    <polygon points="100,10 10,180 190,180" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                    <circle cx="100" cy="125" r="45" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                    <line x1="100" y1="10" x2="100" y2="180" stroke="#FFFFFF" stroke-width="2"/>
+                </svg>
+                <h1 class="font-montserrat cinematic-gold-text text-3xl sm:text-7xl lg:text-[9rem] font-bold tracking-[0.15em] mb-4 leading-[1.5] relative z-10 uppercase" style="animation: titleOpacityRise 4s ease-in-out forwards;">HOGWARTS</h1>
+            </div>
+            <p class="hero-anim-p text-gray-300 text-xs sm:text-xl md:text-3xl tracking-[0.1em] sm:tracking-[0.35em] max-w-4xl mx-auto font-medium font-cinzel mb-10">School of Witchcraft & Wizardry</p>
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-16 md:w-28 h-[1px] bg-gradient-to-r from-transparent to-white/60"></div>
+                <svg width="16" height="16" viewBox="0 0 16 16" class="text-white opacity-60"><polygon points="8,0 16,8 8,16 0,8" fill="currentColor"/></svg>
+                <div class="w-16 md:w-28 h-[1px] bg-gradient-to-l from-transparent to-white/60"></div>
+            </div>
+            <div class="hero-anim-p max-w-xl mx-auto mb-12">
+                <p class="text-gray-400 text-sm md:text-base italic leading-relaxed">"It does not do to dwell on dreams and forget to live."</p>
+                <p class="text-white/60 text-xs tracking-[0.3em] uppercase mt-3 font-bold">— Albus Dumbledore</p>
+            </div>
+            <a href="#station" class="flex flex-col items-center gap-2 text-gray-500 hover:text-white transition-colors group">
+                <span class="text-[9px] tracking-[0.3em] uppercase">Explore</span>
+                <div style="animation: scrollBounce 2s ease-in-out infinite;">
+                    <i data-lucide="chevrons-down" class="w-5 h-5 group-hover:text-white"></i>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section id="station" class="relative min-h-screen py-24 flex items-center border-t border-white/5 bg-transparent overflow-hidden">
+        <div class="max-w-7xl mx-auto w-full px-6 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-6" data-speed="0.9" data-lag="0.1">
+                    <p class="font-montserrat text-white tracking-[0.4em] text-xs uppercase text-glow font-bold">King's Cross Station</p>
+                    <h2 class="font-cinzel text-3xl sm:text-5xl md:text-7xl font-bold text-white drop-shadow-lg">Platform <span class="cinematic-gold-text">9¾</span></h2>
+                    <div class="w-20 h-[1px] bg-[#D4AF37]/50 my-6"></div>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light">
+                        Hidden from Muggle eyes behind a solid brick barrier between platforms 9 and 10 lies the gateway to the Wizarding World. 
+                        As the scarlet steam engine of the Hogwarts Express releases plumes of white smoke, students gather with their trunks, owls, and toads, preparing for another year of magical education.
+                    </p>
+                    <div class="border-l-2 border-[#D4AF37]/40 pl-4 py-1 my-6">
+                        <p class="text-gray-400 text-xs md:text-sm leading-relaxed font-light italic font-serif">
+                            "Best do it at a bit of a run if you're nervous." — Molly Weasley
+                        </p>
+                    </div>
+                    <div class="pt-4">
+                        <a href="train-registration.html" class="btn-magic inline-flex items-center gap-3 font-bold text-xs px-8 py-4 rounded-full">
+                            <i data-lucide="arrow-right" class="w-4 h-4 pointing-arrow"></i>
+                            Board the Express <i data-lucide="train" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative flex justify-center" style="perspective: 1000px;" data-speed="1.1">
+                    <div class="absolute inset-0 bg-[#D4AF37]/10 blur-[80px] rounded-full scale-125 pointer-events-none"></div>
+                    <div class="magic-glass ticket-3d-effect relative w-full max-w-md aspect-[2/1.1] rounded-xl p-6 md:p-8 flex flex-col justify-between border border-[#D4AF37]/40 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-transform duration-700 cursor-pointer">
+                        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.8)_0%,transparent_100%)] pointer-events-none"></div>
+                        <div class="absolute -top-10 left-0 w-full flex justify-between px-8 pointer-events-none z-0">
+                            <div class="magic-particle" style="--delay: 0s; --dur: 4s; --x: -20px;"></div>
+                            <div class="magic-particle" style="--delay: 1.2s; --dur: 5.5s; --x: 15px;"></div>
+                            <div class="magic-particle" style="--delay: 0.5s; --dur: 3.5s; --x: -15px;"></div>
+                            <div class="magic-particle" style="--delay: 2.1s; --dur: 4.8s; --x: 30px;"></div>
+                            <div class="magic-particle" style="--delay: 0.8s; --dur: 5s; --x: 5px;"></div>
+                        </div>
+
+                        <div class="flex justify-between items-center border-b border-dashed border-[#D4AF37]/30 pb-4 mb-4 relative z-10">
+                            <span class="font-cinzel text-lg md:text-xl font-bold text-[#D4AF37] uppercase tracking-widest">Hogwarts Express</span>
+                            <span class="font-montserrat text-gray-400 text-[9px] tracking-[0.3em] uppercase">London to Hogsmeade</span>
+                        </div>
+                        <div class="flex-1 flex flex-col justify-center items-center relative z-10">
+                            <h3 class="font-cinzel text-3xl md:text-5xl text-white font-bold tracking-[0.2em] uppercase text-center my-2 drop-shadow-md">TICKET</h3>
+                        </div>
+                        <div class="flex justify-between items-end pt-4 border-t border-dashed border-[#D4AF37]/30 relative z-10">
+                            <div>
+                                <p class="font-montserrat text-[8px] text-[#D4AF37] uppercase tracking-[0.2em] mb-1">Departs</p>
+                                <p class="font-cinzel text-xs md:text-sm text-white font-bold tracking-wider">Sept 1st, 11:00 AM</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-montserrat text-[8px] text-[#D4AF37] uppercase tracking-[0.2em] mb-1">Platform</p>
+                                <p class="font-cinzel text-xl md:text-2xl text-white font-bold tracking-wider">9 ¾</p>
+                            </div>
+                        </div>
+
+                        <div class="absolute top-1/2 -left-3 w-6 h-6 bg-[#050505] rounded-full transform -translate-y-1/2 border-r border-[#D4AF37]/40 shadow-[inset_-2px_0_4px_rgba(0,0,0,0.5)]"></div>
+                        <div class="absolute top-1/2 -right-3 w-6 h-6 bg-[#050505] rounded-full transform -translate-y-1/2 border-l border-[#D4AF37]/40 shadow-[inset_2px_0_4px_rgba(0,0,0,0.5)]"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="relative py-32 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <p class="text-white text-xs tracking-[0.4em] uppercase mb-4 font-semibold">The Cast</p>
+                <h2 class="font-cinzel text-4xl md:text-6xl font-bold">Wizarding World</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 w-full max-w-5xl mx-auto" id="gallery-container">
+            </div>
+        </div>
+    </section>
+
+    <section id="houses" class="relative py-32 px-6 border-t border-white/5 bg-transparent overflow-hidden">
+        <div class="absolute top-[10%] left-[5%] w-48 h-48 bg-white/3 rounded-full blur-[120px] pointer-events-none opacity-10" style="animation: floatOrb 12s ease-in-out infinite;" data-speed="1.1"></div>
+        <div class="absolute bottom-[5%] right-[10%] w-64 h-64 bg-white/3 rounded-full blur-[150px] pointer-events-none opacity-10" style="animation: floatOrb 15s ease-in-out infinite 3s;" data-speed="0.9"></div>
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-16">
+                <p class="text-white text-xs tracking-[0.4em] uppercase mb-4 font-semibold">The Four Houses</p>
+                <h2 class="font-cinzel text-4xl md:text-6xl font-bold">Choose Your Allegiance</h2>
+                <div class="mt-8">
+                    <a href="alliance-gallery.html" id="hall-of-members-btn" class="btn-magic inline-flex items-center gap-3 font-bold text-xs px-8 py-4 rounded-full transition-all duration-300">
+                        <i data-lucide="arrow-right" class="w-4 h-4 pointing-arrow"></i>
+                        View Hall of Members <i data-lucide="users" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+            <div id="house-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            </div>
+        </div>
+    </section>
+
+    <section id="movies" class="relative h-screen bg-transparent overflow-hidden flex flex-col justify-center border-t border-white/5 z-20">
+        <div class="relative z-30 px-8 md:px-24 mb-6 md:mb-10 w-full pointer-events-none">
+            <p class="text-white text-xs tracking-[0.4em] uppercase font-semibold mb-2 text-glow">The Complete Saga</p>
+            <h2 class="font-cinzel text-4xl md:text-6xl font-bold drop-shadow-lg">Cinematic Chronicles</h2>
+        </div>
+        <div class="movies-strip-wrapper w-full overflow-visible relative z-20 pl-8 md:pl-24">
+            <div class="movies-strip flex gap-4 md:gap-16 w-max items-center h-[75vh] md:h-[65vh]" id="movies-container">
+                <div class="w-[8vw] h-full shrink-0"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="vault" class="relative min-h-screen bg-transparent py-24 flex flex-col items-center justify-center border-t border-white/5 overflow-hidden">
+        <div class="relative z-20 px-8 md:px-24 mb-12 md:mb-16 w-full max-w-7xl mx-auto text-center">
+            <p class="text-white text-xs tracking-[0.4em] uppercase font-semibold mb-2 text-glow">Diagon Alley Vault</p>
+            <h2 class="font-cinzel text-4xl md:text-6xl font-bold drop-shadow-lg">Magical Artifacts</h2>
+        </div>
+        <div id="card-stack-container" class="relative w-full h-[480px] md:h-[550px] max-w-[300px] sm:max-w-xs md:max-w-sm" style="perspective: 2000px;">
+            <!-- Cards injected via JS -->
+        </div>
+        <div class="mt-12 flex items-center gap-4 text-white/50 text-[10px] tracking-[0.3em] uppercase font-montserrat">
+            <i data-lucide="move-left" class="w-4 h-4"></i>
+            <span>Drag or Swipe Cards</span>
+            <i data-lucide="move-right" class="w-4 h-4"></i>
+        </div>
+    </section>
+
+    <!-- Modals Refactored to GSAP opacity -->
+    <div id="merch-modal" class="fixed inset-0 z-[100] flex items-center justify-center invisible opacity-0">
+        <div class="absolute inset-0 bg-[#0A0E17]/90" id="modal-bg"></div>
+        <div class="relative z-10 w-[90%] max-w-4xl bg-[#050505] border border-white/30 rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-[0_0_50px_rgba(255,255,255,0.15)] transform scale-95" id="modal-content">
+            <button id="modal-close" class="absolute top-4 right-4 z-20 p-2 rounded-full magic-glass text-gray-400 hover:text-white"><i data-lucide="x"></i></button>
+            <div class="w-full md:w-1/2 h-64 md:h-auto relative">
+                <img id="m-img" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-transparent to-[#050505]"></div>
+            </div>
+            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                <p id="m-sub" class="text-gray-400 text-xs tracking-[0.3em] uppercase mb-2"></p>
+                <h3 id="m-title" class="font-cinzel text-3xl md:text-4xl text-white mb-4"></h3>
+                <div class="flex items-center gap-4 mb-6">
+                    <span id="m-price" class="text-white font-bold text-2xl tracking-wider"></span>
+                    <span class="text-green-500 text-[10px] tracking-wider uppercase border border-green-500/30 bg-green-500/10 px-2 py-1 rounded">In Stock</span>
+                </div>
+                <p id="m-desc" class="text-gray-300 text-sm md:text-base leading-relaxed mb-8"></p>
+                <button id="buy-btn" class="btn-magic w-full py-3 rounded-lg flex justify-center items-center gap-2 cursor-pointer"><i data-lucide="shopping-bag" class="w-4 h-4"></i> Buy Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alliance-modal" class="fixed inset-0 z-[100] flex items-center justify-center invisible opacity-0">
+        <div id="alliance-modal-bg" class="absolute inset-0 bg-[#0A0E17]/90 backdrop-blur-sm"></div>
+        <div id="alliance-modal-content" class="relative z-10 w-[90%] max-w-lg magic-glass rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.15)] transform scale-95">
+            <div id="alliance-modal-house-bg" class="absolute inset-0 z-0"></div>
+            <button id="alliance-modal-close" class="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/30 text-gray-400 hover:text-white transition-colors"><i data-lucide="x"></i></button>
+            <div id="alliance-modal-body" class="relative z-10 p-8 md:p-12 text-center"></div>
+        </div>
+    </div>
+
+    <script>
+        const galleryData = [
+            { name: "Harry Potter", role: "The Chosen One", img: "assets/1.jpg", active: true },
+            { name: "Hermione Granger", role: "The Brightest Witch", img: "assets/2.jpg" },
+            { name: "Ron Weasley", role: "The Loyal Friend", img: "assets/3.jpg" }
+        ];
+
+        const housesData = [
+            { name: "Gryffindor", founder: "Godric Gryffindor", desc: "Where dwell the brave at heart, their daring, nerve, and chivalry set Gryffindors apart.", traits: ["Courage", "Bravery", "Chivalry"], img: "assets/gryffindor.jpg", emblem: "assets/gryffindor.png", color1: "#740001", color2: "#D4AF37" },
+            { name: "Slytherin", founder: "Salazar Slytherin", desc: "Where you'll find those of great ambition, who use any means to achieve their ends.", traits: ["Ambition", "Cunning", "Resourcefulness"], img: "assets/slytherin.jpg", emblem: "assets/slytherin.png", color1: "#1A472A", color2: "#AAAAAA" },
+            { name: "Ravenclaw", founder: "Rowena Ravenclaw", desc: "Where those of wit and learning will always find their kind.", traits: ["Intelligence", "Wisdom", "Creativity"], img: "assets/ravenclaw.jpg", emblem: "assets/ravenclaw.png", color1: "#0E1A40", color2: "#946B2D" },
+            { name: "Hufflepuff", founder: "Helga Hufflepuff", desc: "Where they are just and loyal, those patient Hufflepuffs are true and unafraid of toil.", traits: ["Loyalty", "Patience", "Hard Work"], img: "assets/hufflepuff.jpg", emblem: "assets/hufflepuff.png", color1: "#FFD800", color2: "#372e29" }
+        ];
+
+        const moviesData = [
+            { part: "Part 1", year: "2001", title: "The Sorcerer's Stone", time: "2h 32m", rating: "7.6", desc: "An orphaned boy enrolls in a school of wizardry, where he learns the truth about himself, his family and the terrible evil that haunts the magical world.", quote: "A magical beginning to an epic, unforgettable journey.", img: "assets/sorcerers-stone.jpg", link: "https://www.imdb.com/title/tt0241527/" },
+            { part: "Part 2", year: "2002", title: "The Chamber of Secrets", time: "2h 41m", rating: "7.4", desc: "An ancient prophecy seems to be coming true when a mysterious presence begins stalking the corridors of a school of magic and leaving its victims paralyzed.", quote: "Darker mysteries unfold in the ancient halls of Hogwarts.", img: "assets/chamber-of-secrets.jpg", link: "https://www.imdb.com/title/tt0295297/" },
+            { part: "Part 3", year: "2004", title: "The Prisoner of Azkaban", time: "2h 22m", rating: "7.9", desc: "Harry, Ron and Hermione return to Hogwarts for their third year of study, where they delve into the mystery surrounding an escaped prisoner who poses a dangerous threat.", quote: "A masterclass in cinematic fantasy and growing up.", img: "assets/prisoner-of-azkaban.jpg", link: "https://www.imdb.com/title/tt0304141/" },
+            { part: "Part 4", year: "2005", title: "The Goblet of Fire", time: "2h 37m", rating: "7.7", desc: "Harry finds himself selected as an underaged competitor in a dangerous multi-wizardry school competition, while the dark lord plots his imminent return to power.", quote: "The Triwizard Tournament brings new, lethal perils.", img: "assets/goblet-of-fire.jpg", link: "https://www.imdb.com/title/tt0330373/" },
+            { part: "Part 5", year: "2007", title: "The Order of the Phoenix", time: "2h 18m", rating: "7.5", desc: "With their warning about Lord Voldemort's return scoffed at, Harry and Dumbledore are targeted by the Wizard authorities as an authoritarian bureaucrat seizes power.", quote: "The rebellion begins as darkness rises.", img: "assets/order-of-the-phoenix.jpg", link: "https://www.imdb.com/title/tt0373889/" },
+            { part: "Part 6", year: "2009", title: "The Half-Blood Prince", time: "2h 33m", rating: "7.6", desc: "As Harry Potter begins his sixth year at Hogwarts, he discovers an old book marked as 'the property of the Half-Blood Prince' and begins to learn more about Lord Voldemort's dark past.", quote: "Secrets of the past hold the key to the future.", img: "assets/half-blood-prince.jpg", link: "https://www.imdb.com/title/tt0417741/" },
+            { part: "Part 7", year: "2010", title: "The Deathly Hallows – Part 1", time: "2h 26m", rating: "7.7", desc: "As Harry, Ron, and Hermione race against time and evil to destroy the Horcruxes, they uncover the existence of the three most powerful objects in the wizarding world.", quote: "The beginning of the devastating end.", img: "assets/deathly-hallows-part-1.jpg", link: "https://www.imdb.com/title/tt0926084/" },
+            { part: "Part 8", year: "2011", title: "The Deathly Hallows – Part 2", time: "2h 10m", rating: "8.1", desc: "Harry, Ron, and Hermione search for Voldemort's remaining Horcruxes in their effort to destroy the Dark Lord as the final battle rages on at Hogwarts.", quote: "An epic, emotional, and satisfying conclusion.", img: "assets/deathly-hallows-part-2.jpg", link: "https://www.imdb.com/title/tt1201607/" }
+        ];
+
+        const merchData = [
+            { title: "The Elder Wand", sub: "Authentic Replica", price: "$39.99", desc: "Crafted by Death himself, this wand is said to be the most powerful in existence. Handle with extreme caution.", img: "assets/wand.jpg", alt: "https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?auto=format&fit=crop&q=80&w=600" },
+            { title: "Time-Turner", sub: "Plated Gold Edition", price: "$49.00", desc: "Crafted with precision, this plated gold Time-Turner lets you safely relive the past hours. 'I mark the hours, every one.'", img: "assets/time.jpg", alt: "https://images.unsplash.com/photo-1501139083538-0139583c060f?auto=format&fit=crop&q=80&w=600" },
+            { title: "Sorting Hat", sub: "Interactive Prop", price: "$59.99", desc: "A sentient hat that determines which of the four school Houses each new student belongs most to. It knows all your secrets.", img: "assets/hat.jpg", alt: "https://images.unsplash.com/photo-1552554581-2292f72a6b25?auto=format&fit=crop&q=80&w=600" },
+            { title: "House Scarf", sub: "Premium Knit", price: "$24.95", desc: "Stay warm during the winter months at Hogwarts with this premium knit scarf in your house colors. Courage, bravery, and nerve.", img: "assets/scarf.jpg", alt: "https://images.unsplash.com/photo-1603507000185-1bf551a37c95?auto=format&fit=crop&q=80&w=600" },
+            { title: "Golden Snitch", sub: "Collector's Model", price: "$34.50", desc: "The most important ball in Quidditch. Catching this nimble golden orb earns the Seeker's team 150 points and ends the game.", img: "assets/snitch.jpg", alt: "https://images.unsplash.com/photo-1589317502758-100bc0b4b20a?auto=format&fit=crop&q=80&w=600" },
+            { title: "Marauder's Map", sub: "Detailed Parchment", price: "$29.99", desc: "A magical document that reveals all of Hogwarts School and its grounds, including every person's real-time location.", img: "assets/map.jpg", alt: "https://images.unsplash.com/photo-1507747805177-3e618ce5f2a1?auto=format&fit=crop&q=80&w=600" },
+            { title: "Invisibility Cloak", sub: "App-Enabled Prop", price: "$69.90", desc: "A magical garment which renders whatever it covers unseeable. Passed down from Ignotus Peverell. Use it well.", img: "assets/cloak.jpg", alt: "https://images.unsplash.com/photo-1582297126154-15f5cbb819c9?auto=format&fit=crop&q=80&w=600" },
+            { title: "Firebolt", sub: "Life-Size Replica", price: "$299.00", desc: "A world-class broomstick, capable of going from zero to 150 miles per hour in ten seconds. Flawless balance and precision.", img: "assets/broom.jpg", alt: "https://images.unsplash.com/photo-1517488629431-6427e02d7280?auto=format&fit=crop&q=80&w=600" },
+            { title: "Riddle's Diary", sub: "Leather Bound", price: "$39.00", desc: "A seemingly innocent blank diary that actually contains the sixteen-year-old memory of Tom Riddle. Write at your own risk.", img: "assets/diary.jpg", alt: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600" }
+        ];
+
+        // Setup Lightning Canvas
+        function initLightning() {
+            const canvas = document.getElementById('lightning-canvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            
+            const resizeObserver = new ResizeObserver(() => {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            });
+            resizeObserver.observe(document.body);
+
+            // Simple occasional flash to simulate magic/lightning outside
+            setInterval(() => {
+                if (Math.random() > 0.96) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.15 + 0.05})`;
+                    ctx.fillRect(0, 0, w, h);
+                    setTimeout(() => ctx.clearRect(0, 0, w, h), Math.random() * 100 + 50);
+                }
+            }, 200);
+        }
+
+        // Inject Gallery
+        const galContainer = document.getElementById('gallery-container');
+        if (galContainer) {
+            galleryData.forEach(item => {
+                const tilt = (Math.random() * 6 - 3).toFixed(2);
+                galContainer.innerHTML += `
+                    <div class="gallery-item ${item.active ? 'active' : ''}" style="--tilt: ${tilt}deg;">
+                        <img src="${item.img}" alt="${item.name}" loading="lazy">
+                        <div class="gallery-overlay"></div>
+                        <div class="gallery-info">
+                            <h3 class="font-cinzel text-2xl md:text-3xl font-bold text-[#E6C259] mb-2 drop-shadow-lg">${item.name}</h3>
+                            <span class="text-[10px] sm:text-xs tracking-[0.2em] uppercase text-white font-montserrat">${item.role}</span>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // Inject Houses
+        const houseCardsContainer = document.getElementById('house-cards-container');
+        if (houseCardsContainer) {
+            let houseCardsHTML = '';
+            housesData.forEach((house, index) => {
+                const tilt = (Math.random() * 5 - 2.5).toFixed(2);
+                houseCardsHTML += `
+                    <div class="house-card group relative aspect-[2/3] overflow-hidden rounded-xl" data-index="${index}" style="--house-color-1: ${house.color1}; --house-color-2: ${house.color2}; --tilt: ${tilt}deg; background: linear-gradient(160deg, #111 0%, var(--house-color-1) 100%);">
+                        <div class="absolute inset-2 border border-white/20 rounded-lg pointer-events-none z-20"></div>
+                        <div class="absolute inset-3 border border-dashed border-white/20 rounded-lg pointer-events-none z-20"></div>
+                        
+                        <img src="${house.img}" loading="lazy" alt="${house.name} background" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-1000 ease-in-out group-hover:scale-110 opacity-30 mix-blend-overlay">
+                        
+                        <div class="relative z-10 w-full h-full flex flex-col items-center justify-between p-6 text-center">
+                            <div class="w-full pt-2 pb-4 border-b border-white/20 relative">
+                                <h3 class="font-cinzel text-xl md:text-2xl font-bold text-white tracking-widest drop-shadow-md">${house.name}</h3>
+                                <div class="absolute -bottom-[3px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 rotate-45 bg-white/50"></div>
+                            </div>
+                            
+                            <div class="flex-1 flex items-center justify-center py-6 w-full relative">
+                                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--house-color-2)_0%,transparent_60%)] opacity-0 group-hover:opacity-20 transition-opacity duration-700"></div>
+                                <img src="${house.emblem}" alt="${house.name} emblem" class="w-[60%] sm:w-[50%] aspect-square object-contain drop-shadow-[0_0_20px_rgba(0,0,0,0.8)] transition-transform duration-700 group-hover:scale-110 group-hover:rotate-[-5deg]">
+                            </div>
+                            
+                            <div class="w-full pt-4 border-t border-white/20 relative">
+                                <div class="absolute -top-[3px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 rotate-45 bg-white/50"></div>
+                                <p class="text-[9px] tracking-[0.3em] uppercase text-gray-300 font-montserrat font-bold mb-2 md:mb-3">${house.traits.join(' · ')}</p>
+                                <div class="view-details mt-3 px-2">
+                                    <button class="w-full py-1.5 sm:py-2 border border-solid rounded-full font-cinzel font-bold text-[10px] sm:text-xs tracking-widest uppercase transition-all duration-500 hover:bg-white/20 hover:text-white flex justify-center items-center gap-2 bg-black/40 backdrop-blur-sm" style="color: var(--house-color-2); border-color: var(--house-color-2); text-shadow: 0 0 10px rgba(0,0,0,0.8);">Join Now <i data-lucide="shield-check" class="w-3 h-3"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 z-30 pointer-events-none opacity-0 group-hover:opacity-40 transition-opacity duration-700 bg-[linear-gradient(115deg,transparent_20%,rgba(255,255,255,0.4)_25%,transparent_30%,rgba(255,255,255,0.2)_35%,transparent_40%)] mix-blend-overlay foil-sweep"></div>
+                    </div>
+                `;
+            });
+            houseCardsContainer.innerHTML = houseCardsHTML;
+        }
+
+        // Inject Movies
+        const movContainer = document.getElementById('movies-container');
+        let movHTML = "";
+        moviesData.forEach((m) => {
+            movHTML += `
+                <div class="movie-card w-[85vw] md:w-[65vw] lg:w-[50vw] h-full shrink-0 group relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 isolate">
+                    <div class="absolute inset-0 z-0">
+                        <img src="${m.img}" loading="lazy" class="w-full h-full object-cover scale-110 blur-xl opacity-30 group-hover:scale-125 group-hover:opacity-40 transition-all duration-1000">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent md:bg-gradient-to-r md:from-[#050505] md:via-[#050505]/95 md:to-transparent"></div>
+                    </div>
+                    
+                    <div class="relative z-10 w-full h-full p-5 sm:p-8 md:p-12 flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-12">
+                        <div class="w-[45%] sm:w-[40%] md:w-[45%] shrink-0 relative group/poster pt-2 md:pt-0">
+                            <div class="absolute inset-0 bg-[#D4AF37]/20 blur-3xl rounded-full opacity-0 group-hover/poster:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                            <div class="relative w-full aspect-[2/3] rounded-xl md:rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.8)] border border-white/10 overflow-hidden transform transition-transform duration-700 group-hover/poster:scale-[1.02]">
+                                <div class="poster-parallax absolute top-0 -left-[15%] w-[130%] h-full">
+                                    <img src="${m.img}" loading="lazy" class="w-full h-full object-cover transform transition-transform duration-700 group-hover/poster:scale-110">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-1 flex flex-col w-full h-auto justify-center text-center md:text-left overflow-y-auto md:overflow-visible pr-2 md:pr-0 pb-1 md:pb-0">
+                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-4 mb-2 md:mb-4">
+                                <span class="text-[#D4AF37] text-[9px] md:text-sm tracking-[0.3em] uppercase font-bold border-b border-[#D4AF37]/50 pb-0.5">${m.part}</span>
+                                <span class="text-gray-400 text-[9px] md:text-xs tracking-widest">${m.year}</span>
+                            </div>
+                            
+                            <h3 class="font-cinzel text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-6 drop-shadow-lg leading-tight transition-colors">
+                                ${m.title}
+                            </h3>
+                            
+                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3 mb-3 md:mb-6 text-[8px] md:text-xs uppercase">
+                                <span class="flex items-center gap-1 md:gap-1.5 border border-white/20 rounded-full px-2 py-1 md:px-4 md:py-1.5 bg-black/40 backdrop-blur-md">
+                                    <i data-lucide="clock" class="w-3 h-3 md:w-3.5 md:h-3.5 text-[#D4AF37]"></i> ${m.time}
+                                </span>
+                                <span class="flex items-center gap-1 md:gap-1.5 border border-white/20 rounded-full px-2 py-1 md:px-4 md:py-1.5 bg-black/40 backdrop-blur-md">
+                                    <i data-lucide="star" class="w-3 h-3 md:w-3.5 md:h-3.5 text-[#D4AF37]"></i> ${m.rating}
+                                </span>
+                            </div>
+                            
+                            <p class="text-gray-300 text-[10px] sm:text-xs md:text-base leading-relaxed mb-3 md:mb-6 font-light line-clamp-3 md:line-clamp-none">${m.desc}</p>
+                            
+                            <div class="border-l-2 border-[#D4AF37] pl-4 py-1 mb-6 hidden md:block">
+                                <p class="italic text-gray-400 text-xs md:text-sm font-serif">"${m.quote}"</p>
+                            </div>
+                            
+                            <div class="mt-auto md:mt-0 pt-2 md:pt-0 w-full md:w-max">
+                                <a href="${m.link}" target="_blank" rel="noopener noreferrer" class="btn-magic inline-flex items-center justify-center gap-2 font-bold text-[9px] md:text-xs px-6 py-2.5 md:px-8 md:py-3.5 rounded-full w-full md:w-max">
+                                    <i data-lucide="play" class="w-3 h-3 md:w-4 md:h-4"></i> Watch Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        });
+        movContainer.insertAdjacentHTML('afterbegin', movHTML);
+
+        // Inject Vault
+        const cardStackContainer = document.getElementById('card-stack-container');
+        let merchHTML = "";
+        merchData.forEach((item, i) => {
+            merchHTML += `
+                <div class="merch-item-stack absolute inset-0 magic-glass rounded-2xl p-4 sm:p-6 flex flex-col justify-between border-white/10" data-index="${i}">
+                    <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden mb-4 border border-white/10 shadow-lg pointer-events-none">
+                        <img src="${item.img}" onerror="this.src='${item.alt}'" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 flex flex-col text-center items-center">
+                        <p class="text-gray-400 text-[9px] sm:text-[10px] tracking-[0.2em] uppercase">${item.sub}</p>
+                        <h3 class="font-cinzel text-xl sm:text-2xl text-white mb-2 drop-shadow-lg">${item.title}</h3>
+                        <p class="text-gray-300 text-xs sm:text-sm leading-relaxed font-light mb-4 line-clamp-2">${item.desc}</p>
+                    </div>
+                    <div class="mt-auto flex justify-between items-center border-t border-white/10 pt-4">
+                        <span class="text-white font-bold text-lg sm:text-xl tracking-wider">${item.price}</span>
+                        <button class="inspect-btn btn-magic font-bold text-[10px] sm:text-xs px-4 py-2 rounded-full">
+                            Inspect
+                        </button>
+                    </div>
+                </div>`;
+        });
+        if (cardStackContainer) cardStackContainer.innerHTML = merchHTML;
+
+        // Core Interactions
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.context(() => {
+                initLightning();
+                lucide.createIcons();
+                gsap.registerPlugin(ScrollTrigger);
+
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+            // Refined Lenis for Buttery Feel
+            const lenis = new Lenis({ 
+                duration: 1.5, 
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
+                smoothWheel: true, 
+                wheelMultiplier: 1.2,
+                touchMultiplier: 2 
+            });
+                if (!prefersReducedMotion) {
+                    lenis.on('scroll', ScrollTrigger.update);
+                    gsap.ticker.add((time) => lenis.raf(time * 1000));
+                    gsap.ticker.lagSmoothing(0);
+                }
+
+            // Browser State & Visibility Handlers
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    gsap.ticker.sleep();
+                    const bgMusic = document.getElementById('bg-music');
+                    if (bgMusic && !bgMusic.paused) {
+                        bgMusic.pause();
+                        bgMusic.dataset.wasPlaying = 'true';
+                    }
+                } else {
+                    gsap.ticker.wake();
+                    const bgMusic = document.getElementById('bg-music');
+                    if (bgMusic && bgMusic.dataset.wasPlaying === 'true') {
+                        bgMusic.play().catch(() => {});
+                        delete bgMusic.dataset.wasPlaying;
+                    }
+                }
+            });
+
+            // Hardware & Environmental Handlers (Detect Low-End Devices)
+            const isLowTierHardware = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.connection && navigator.connection.saveData);
+
+            const navEntry = performance.getEntriesByType("navigation")[0];
+            if (navEntry && navEntry.type === 'reload') {
+                setTimeout(() => lenis.scrollTo(0, { immediate: true }), 10);
+                }
+
+                // --- NAVIGATION ---
+                const flowingItems = document.querySelectorAll('.flowing-item');
+                const findClosestEdge = (mouseX, mouseY, width, height) => {
+                    const topEdgeDist = Math.pow(mouseX - width / 2, 2) + Math.pow(mouseY, 2);
+                    const bottomEdgeDist = Math.pow(mouseX - width / 2, 2) + Math.pow(mouseY - height, 2);
+                    return topEdgeDist < bottomEdgeDist ? 'top' : 'bottom';
+                };
+
+                flowingItems.forEach(item => {
+                    const link = item.querySelector('a');
+                    const textSpan = item.querySelector('.nav-text');
+                    const marquee = item.querySelector('.flowing-marquee');
+                    const marqueeInner = item.querySelector('.marquee-inner');
+                    
+                    const text = textSpan.innerText.trim();
+                    const img = item.dataset.img || 'assets/HARRY.jpg';
+                    const isMobile = link.classList.contains('mobile-nav-link');
+                    
+                    const textSizeClass = isMobile ? "text-xl md:text-2xl" : "text-[10px]";
+                    const imgSizeClass = isMobile ? "w-16 h-8 md:w-20 md:h-10 mx-4 rounded-full" : "w-8 h-4 mx-2 rounded-full";
+                    const speed = isMobile ? 8 : 4; 
+                    
+                    const repetitions = isMobile ? 6 : 10;
+                    let innerHTML = '';
+                    for(let i=0; i<repetitions; i++) {
+                        innerHTML += `
+                            <div class="flex items-center flex-shrink-0 text-[#050505]">
+                                <span class="whitespace-nowrap uppercase font-cinzel font-bold ${textSizeClass} leading-[1] px-2 tracking-[0.2em]">${text}</span>
+                                <div class="${imgSizeClass} bg-cover bg-center" style="background-image: url(${img})"></div>
+                            </div>
+                        `;
+                    }
+                    marqueeInner.innerHTML = innerHTML;
+
+                    if (!prefersReducedMotion) {
+                        let anim = null;
+                        const setupMarquee = () => {
+                            const part = marqueeInner.children[0];
+                            if (!part) return;
+                            const contentWidth = part.offsetWidth;
+                            if (anim) anim.kill();
+                            anim = gsap.to(marqueeInner, { x: -contentWidth, duration: speed, ease: 'none', repeat: -1 });
+                        };
+                        setTimeout(setupMarquee, 100);
+                        window.addEventListener('resize', setupMarquee);
+
+                        const enter = (e) => {
+                            const rect = item.getBoundingClientRect();
+                            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                            const edge = findClosestEdge(clientX - rect.left, clientY - rect.top, rect.width, rect.height);
+                            textSpan.style.opacity = '0';
+                            gsap.timeline({ defaults: { duration: 0.6, ease: 'expo.out' } })
+                                .set(marquee, { y: edge === 'top' ? '-101%' : '101%' }, 0)
+                                .set(marqueeInner, { y: edge === 'top' ? '101%' : '-101%' }, 0)
+                                .to([marquee, marqueeInner], { y: '0%' }, 0);
+                        };
+
+                        const leave = (e) => {
+                            const rect = item.getBoundingClientRect();
+                            const clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
+                            const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY);
+                            const edge = findClosestEdge(clientX - rect.left, clientY - rect.top, rect.width, rect.height);
+                            textSpan.style.opacity = '1';
+                            gsap.timeline({ defaults: { duration: 0.6, ease: 'expo.out' } })
+                                .to(marquee, { y: edge === 'top' ? '-101%' : '101%' }, 0)
+                                .to(marqueeInner, { y: edge === 'top' ? '101%' : '-101%' }, 0);
+                        };
+
+                        item.addEventListener('mouseenter', enter);
+                        item.addEventListener('mouseleave', leave);
+                        item.addEventListener('touchstart', enter, {passive: true});
+                        item.addEventListener('touchend', leave, {passive: true});
+                    }
+                });
+
+                // --- ANIMATIONS & SCROLL TRIGGERS ---
+                if (!prefersReducedMotion) {
+                    lenis.on('scroll', e => {
+                        const skew = gsap.utils.clamp(-4, 4, e.velocity * 0.05);
+                        gsap.to('.gallery-item', {
+                            '--skew-y': `${skew}deg`, duration: 0.5, ease: "power3.out", overwrite: "auto"
+                        });
+                    });
+
+                    let mm = gsap.matchMedia();
+                    mm.add({
+                        isDesktop: "(min-width: 1024px)",
+                        isMobile: "(max-width: 1023px)"
+                    }, (context) => {
+                        let { isMobile } = context.conditions;
+                        document.querySelectorAll('[data-speed], [data-lag]').forEach(elem => {
+                            const speed = parseFloat(elem.getAttribute('data-speed')) || 1;
+                            const lag = parseFloat(elem.getAttribute('data-lag')) || 0;
+                            if (speed !== 1 || lag !== 0) {
+                                const isHero = elem.closest('#hero') !== null;
+                                if (isMobile && !isHero) return; 
+                                gsap.to(elem, {
+                                    y: (i, el) => (isHero ? window.innerHeight : (window.innerHeight + el.offsetHeight)) * (1 - speed),
+                                    ease: "none",
+                                    scrollTrigger: {
+                                        trigger: elem, start: isHero ? "top top" : "top bottom", end: "bottom top",
+                                        scrub: lag > 0 ? lag : true, invalidateOnRefresh: true
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    // Cinematic Hero Scroll-out
+                    gsap.to('#hero .relative.z-10', {
+                        scale: 0.8,
+                        opacity: 0,
+                        scrollTrigger: {
+                            trigger: '#hero',
+                            start: 'top top',
+                            end: 'bottom top',
+                            scrub: true
+                        }
+                    });
+                }
+
+                const isReturning = new URLSearchParams(window.location.search).get('returned') === 'true';
+                gsap.from('#hero .relative.z-10', { scale: isReturning ? 0.4 : 0.85, opacity: 0, y: isReturning ? 100 : 40, duration: isReturning ? 2.5 : 2, ease: "expo.out", delay: 0.2 });
+                gsap.from('#global-bg-img', { scale: isReturning ? 2 : 1.2, opacity: 0, duration: isReturning ? 3 : 2.5, ease: "power3.out" });
+
+                const pageSections = document.querySelectorAll('section, footer');
+                function updateNav(id) {
+                    if (!id) return;
+                    document.querySelectorAll('.magic-glass .nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) { link.classList.add('active'); }
+                    });
+                    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.remove('text-gray-400'); link.classList.add('text-white');
+                        } else {
+                            link.classList.remove('text-white'); link.classList.add('text-gray-400');
+                        }
+                    });
+                }
+
+                pageSections.forEach(section => {
+                    ScrollTrigger.create({ trigger: section, start: 'top 50%', end: 'bottom 50%', onEnter: () => updateNav(section.id), onEnterBack: () => updateNav(section.id) });
+                });
+
+                const mobileBtn = document.getElementById('mobile-menu-btn');
+                const mobileMenu = document.getElementById('mobile-menu-overlay');
+                let isMenuOpen = false;
+
+                function toggleMenu() {
+                    isMenuOpen = !isMenuOpen;
+                    if (isMenuOpen) {
+                        mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                        mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+                        mobileBtn.innerHTML = '<i data-lucide="x" class="w-5 h-5"></i>';
+                        lucide.createIcons(); lenis.stop();
+                    } else {
+                        mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+                        mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                        mobileBtn.innerHTML = '<i data-lucide="menu" class="w-5 h-5"></i>';
+                        lucide.createIcons(); lenis.start();
+                    }
+                }
+
+                mobileBtn.addEventListener('click', toggleMenu);
+                document.querySelectorAll('a[href^="#"]').forEach(a => {
+                    a.addEventListener('click', e => {
+                        e.preventDefault();
+                        const target = a.getAttribute('href');
+                        if (isMenuOpen) toggleMenu();
+                        setTimeout(() => lenis.scrollTo(target), 50);
+                    });
+                });
+
+                if (!prefersReducedMotion) {
+                    let isHidden = false;
+                    lenis.on('scroll', e => {
+                        const hide = e.direction === 1 && e.scroll > 50 && !isMenuOpen;
+                        if (hide !== isHidden) {
+                            isHidden = hide;
+                            gsap.to('#main-nav', { yPercent: hide ? -150 : 0, duration: 0.4 });
+                        }
+                    });
+
+                    const heroParticles = document.getElementById('hero-particles');
+                    function spawnHeroParticle() {
+                        const p = document.createElement('div');
+                        p.className = 'hero-particle';
+                        const size = 2 + Math.random() * 4;
+                        const x = Math.random() * 100;
+                        const dur = 3 + Math.random() * 4;
+                        const color = Math.random() > 0.5 ? '#CCCCCC' : '#ffffff';
+                        p.style.cssText = `width:${size}px;height:${size}px;left:${x}%;bottom:${Math.random()*30}%;background:${color};box-shadow:0 0 ${size*2}px ${color};animation:floatParticle ${dur}s ease-in-out forwards;`;
+                        heroParticles.appendChild(p);
+                        setTimeout(() => p.remove(), dur * 1000);
+                    }
+                    if (heroParticles) setInterval(spawnHeroParticle, isLowTierHardware ? 900 : 300);
+
+                    document.querySelectorAll('section').forEach((section, index) => {
+                        if (section.id === 'movies' || section.id === 'vault') return;
+                        if (index !== 0) {
+                            gsap.fromTo(section, { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, ease: "none", scrollTrigger: { trigger: section, start: "top 95%", end: "top 30%", scrub: true } });
+                        }
+                        gsap.fromTo(section, { scale: 1, opacity: 1 }, { scale: 0.85, opacity: 0, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: "bottom 70%", end: "bottom 5%", scrub: true } });
+                    });
+
+                    ['#vault', '#footer'].forEach(selector => {
+                        const el = document.querySelector(selector);
+                        if (el) {
+                            gsap.fromTo(el, { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none reverse" } });
+                        }
+                    });
+
+                    const setupHScroll = (triggerId, stripSelector) => {
+                        const strip = document.querySelector(stripSelector);
+                        if(strip) {
+                            const tl = gsap.timeline({
+                                scrollTrigger: { 
+                                    trigger: triggerId, 
+                                    start: "top top", 
+                                    end: () => `+=${strip.scrollWidth}`, 
+                                    pin: true, 
+                                    scrub: 1, 
+                                    invalidateOnRefresh: true 
+                                }
+                            });
+                            
+                            tl.to(strip, { x: () => -(strip.scrollWidth - strip.parentElement.clientWidth), ease: "none" }, 0);
+                            
+                            const posters = strip.querySelectorAll('.poster-parallax');
+                            if (posters.length > 0) {
+                                tl.fromTo(posters, { xPercent: -10 }, { xPercent: 10, ease: "none" }, 0);
+                            }
+                        }
+                    };
+                    setupHScroll('#movies', '.movies-strip');
+
+                    const galleryItems = document.querySelectorAll('.gallery-item');
+                    let galleryInterval = null;
+                    let activeGalleryIdx = 0;
+
+                    function setActiveGallery(idx) {
+                        galleryItems.forEach(i => i.classList.remove('active'));
+                        galleryItems[idx].classList.add('active');
+                    }
+
+                    function startGalleryCycle() {
+                        if (galleryInterval) return;
+                        galleryInterval = setInterval(() => {
+                            activeGalleryIdx = (activeGalleryIdx + 1) % galleryItems.length;
+                            setActiveGallery(activeGalleryIdx);
+                        }, 2500);
+                    }
+
+                    function stopGalleryCycle() { clearInterval(galleryInterval); galleryInterval = null; }
+
+                    ScrollTrigger.create({
+                        trigger: '#gallery', start: 'top 80%', end: 'bottom 20%',
+                        onEnter: startGalleryCycle, onEnterBack: startGalleryCycle,
+                        onLeave: stopGalleryCycle, onLeaveBack: stopGalleryCycle
+                    });
+
+                    galleryItems.forEach((item, idx) => {
+                        const act = () => {
+                            activeGalleryIdx = idx; setActiveGallery(idx); stopGalleryCycle(); startGalleryCycle();
+                        };
+                        item.addEventListener('mouseenter', act);
+                        item.addEventListener('click', act);
+                    });
+                }
+
+                const hallOfMembersBtn = document.getElementById('hall-of-members-btn');
+                const housesSection = document.getElementById('houses');
+
+                if (hallOfMembersBtn && housesSection) {
+                    document.querySelectorAll('.house-card').forEach(card => {
+                        card.addEventListener('mouseenter', () => {
+                            const glowColor = card.style.getPropertyValue('--house-color-2');
+                            if (glowColor) { hallOfMembersBtn.style.setProperty('--glow-color', glowColor.trim()); }
+                        });
+                    });
+                    housesSection.addEventListener('mouseleave', () => { hallOfMembersBtn.style.removeProperty('--glow-color'); });
+                }
+
+                // --- MODALS ---
+                const modal = document.getElementById('merch-modal');
+                const mContent = document.getElementById('modal-content');
+                let currentModalIdx = 0;
+                
+                const openModal = (idx) => {
+                    currentModalIdx = idx; const item = merchData[idx];
+                    document.getElementById('m-img').src = item.img;
+                    document.getElementById('m-title').innerText = item.title;
+                    document.getElementById('m-sub').innerText = item.sub;
+                    document.getElementById('m-price').innerText = item.price;
+                    document.getElementById('m-desc').innerText = item.desc;
+                    
+                    lenis.stop();
+                    gsap.to(modal, { autoAlpha: 1, duration: 0.3 });
+                    gsap.fromTo(mContent, { scale: 0.95 }, { scale: 1, duration: 0.4, ease: "back.out(1.2)" });
+                };
+                const closeModal = () => {
+                    lenis.start();
+                    gsap.to(modal, { autoAlpha: 0, duration: 0.3 });
+                };
+
+                document.getElementById('modal-close').addEventListener('click', closeModal);
+                document.getElementById('modal-bg').addEventListener('click', closeModal);
+
+                document.getElementById('buy-btn').addEventListener('click', () => {
+                    const item = merchData[currentModalIdx];
+                    const params = new URLSearchParams({ title: item.title, sub: item.sub, price: item.price, img: item.img });
+                    window.location.href = `checkout.html?${params.toString()}`;
+                });
+
+                function initCardStack() {
+                    const container = document.getElementById('card-stack-container');
+                    if (!container) return;
+
+                    let cards = Array.from(container.querySelectorAll('.merch-item-stack'));
+                    let isDragging = false, startX = 0, currentX = 0;
+
+                    const updateCards = (animate = false) => {
+                        cards.forEach((card, index) => {
+                            const isTopCard = index === 0;
+                            let tween = gsap.to(card, {
+                                y: index * -15,
+                                scale: 1 - index * 0.05,
+                                opacity: isTopCard ? 1 : Math.max(0, 1 - (index * 0.25)),
+                                duration: animate ? 0.4 : 0,
+                                ease: 'power3.out',
+                                overwrite: true
+                            });
+                            card.style.zIndex = cards.length - index;
+                            card.style.pointerEvents = isTopCard ? 'auto' : 'none';
+                        });
+                    };
+
+                    const onPointerDown = (e) => {
+                        if (e.target.closest('button') || cards.indexOf(e.target.closest('.merch-item-stack')) !== 0) return;
+                        isDragging = true;
+                        startX = e.clientX || e.touches[0].clientX;
+                        currentX = startX;
+                        gsap.killTweensOf(cards[0]);
+                    };
+
+                    const onPointerMove = (e) => {
+                        if (!isDragging) return;
+                        currentX = e.clientX || e.touches[0].clientX;
+                        const diffX = currentX - startX;
+                        gsap.to(cards[0], {
+                            x: diffX,
+                            rotation: diffX / 20,
+                            duration: 0.1,
+                            ease: 'power1.out'
+                        });
+                    };
+
+                    const onPointerUp = (e) => {
+                        if (!isDragging) return;
+                        isDragging = false;
+                        const diffX = currentX - startX;
+
+                        if (Math.abs(diffX) > 100) { // Swipe threshold
+                            const direction = diffX > 0 ? 1 : -1;
+                            gsap.to(cards[0], {
+                                x: direction * 400,
+                                rotation: direction * 25,
+                                opacity: 0,
+                                duration: 0.4,
+                                ease: 'power1.in',
+                                onComplete: () => {
+                                    const swipedCard = cards.shift();
+                                    cards.push(swipedCard);
+                                    container.appendChild(swipedCard);
+                                    gsap.set(swipedCard, { x: 0, rotation: 0, opacity: 1 });
+                                    updateCards(true);
+                                }
+                            });
+                        } else { // Return to stack
+                            gsap.to(cards[0], { x: 0, rotation: 0, duration: 0.4, ease: 'back.out(1.7)' });
+                        }
+                    };
+
+                    container.addEventListener('mousedown', onPointerDown);
+                    document.addEventListener('mousemove', onPointerMove);
+                    document.addEventListener('mouseup', onPointerUp);
+                    document.addEventListener('mouseleave', onPointerUp);
+                    container.addEventListener('touchstart', onPointerDown, { passive: true });
+                    document.addEventListener('touchmove', onPointerMove, { passive: true });
+                    document.addEventListener('touchend', onPointerUp);
+
+                    container.addEventListener('click', e => {
+                        const inspectBtn = e.target.closest('.inspect-btn');
+                        if (inspectBtn && cards.indexOf(inspectBtn.closest('.merch-item-stack')) === 0) {
+                            openModal(parseInt(cards[0].dataset.index, 10));
+                        }
+                    });
+
+                    updateCards();
+                }
+                initCardStack();
+
+                const aModal = document.getElementById('alliance-modal');
+                const aContent = document.getElementById('alliance-modal-content');
+                const aBody = document.getElementById('alliance-modal-body');
+                const aHouseBg = document.getElementById('alliance-modal-house-bg');
+                
+                const openAllianceModal = (idx) => {
+                    const house = housesData[idx];
+                    const houseParams = new URLSearchParams({ house: house.name, emblem: house.emblem, color1: house.color1, color2: house.color2 }).toString();
+                    const modalDisplayColor = house.name === 'Hufflepuff' ? house.color1 : (house.color2 || '#D4AF37');
+                    
+                    aHouseBg.innerHTML = `<img src="${house.img}" class="w-full h-full object-cover opacity-25"><div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-[#050505]/40"></div>`;
+                    aBody.innerHTML = `<div class="flex flex-col items-center gap-6 relative z-10"><div><h3 class="font-cinzel text-3xl md:text-5xl font-bold tracking-widest mb-1" style="color: ${modalDisplayColor}; text-shadow: 0 0 20px ${house.color1}40;">${house.name}</h3><p class="font-montserrat text-white/50 text-[10px] md:text-xs tracking-[0.3em] uppercase">Founder: ${house.founder}</p></div><p class="text-gray-300 text-sm md:text-base leading-relaxed max-w-md font-light">${house.desc}</p><div class="flex flex-wrap justify-center gap-2 md:gap-3 my-2">${house.traits.map(t => `<span class="border rounded-full px-3 py-1 bg-white/5 text-white text-[10px] md:text-xs uppercase tracking-wider font-semibold hover:bg-white/10 transition-colors" style="border-color: ${modalDisplayColor}50; color: ${modalDisplayColor}; box-shadow: 0 0 10px ${modalDisplayColor}15;">${t}</span>`).join('')}</div><div class="w-full mt-6"><a href="join-alliance.html?${houseParams}" class="btn-magic inline-flex items-center justify-center gap-2 w-full max-w-xs font-bold text-sm px-6 py-4 rounded-full active:scale-95">Join Alliance <i data-lucide="shield-check" class="w-4 h-4"></i></a></div></div>`;
+                    
+                    lucide.createIcons(); lenis.stop();
+                    gsap.to(aModal, { autoAlpha: 1, duration: 0.35 });
+                    gsap.fromTo(aContent, { scale: 0.9, y: 20 }, { scale: 1, y: 0, duration: 0.5, ease: "power4.out" });
+                };
+
+                const closeAllianceModal = () => {
+                    lenis.start();
+                    gsap.to(aModal, { autoAlpha: 0, duration: 0.3, onComplete: () => { aHouseBg.innerHTML = ''; } });
+                };
+
+                if (houseCardsContainer) {
+                    houseCardsContainer.addEventListener('click', (e) => {
+                        const card = e.target.closest('.house-card');
+                        if (card) openAllianceModal(card.dataset.index);
+                    });
+                }
+
+                document.getElementById('alliance-modal-close')?.addEventListener('click', closeAllianceModal);
+                document.getElementById('alliance-modal-bg')?.addEventListener('click', closeAllianceModal);
+
+                // --- GOLDEN SNITCH LOGIC ---
+                const snitch = document.getElementById('snitch');
+                const snitchPopup = document.querySelector('.snitch-popup');
+                
+                if (snitch && !prefersReducedMotion) {
+                    let snitchX = window.innerWidth / 2, snitchY = window.innerHeight / 2;
+                    let targetX = snitchX, targetY = snitchY;
+                    let speed = 0.02, mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+                    let isCaught = false;
+
+                    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+                    if (isTouchDevice) {
+                        snitch.style.display = 'none';
+                    } else {
+                        snitch.style.pointerEvents = 'auto'; // Enable clicking
+                        snitch.style.cursor = 'crosshair';
+
+                        window.addEventListener('mousemove', e => { 
+                            if (!isCaught) { mouseX = e.clientX; mouseY = e.clientY; }
+                        });
+
+                        function pickNewTarget() {
+                            if (isCaught) return;
+                            targetX = Math.random() * (window.innerWidth - 50) + 25;
+                            targetY = Math.random() * (window.innerHeight - 50) + 25;
+                            speed = 0.02 + Math.random() * 0.04;
+                            setTimeout(pickNewTarget, 800 + Math.random() * 2000);
+                        }
+                        pickNewTarget();
+                        
+                        const popupInterval = setInterval(() => {
+                            if (isCaught) { clearInterval(popupInterval); return; }
+                            snitchPopup.classList.add('show');
+                            setTimeout(() => { if (!isCaught) snitchPopup.classList.remove('show'); }, 1500);
+                        }, 4000);
+
+                        function updateSnitch() {
+                            if (isCaught) return;
+                            const dx = snitchX - mouseX;
+                            const dy = snitchY - mouseY;
+                            const distance = Math.sqrt(dx*dx + dy*dy);
+                            
+                            if (distance < 120) {
+                                const safeDist = distance || 1;
+                                targetX = snitchX + (dx / safeDist) * 300 + (Math.random() * 100 - 50);
+                                targetY = snitchY + (dy / safeDist) * 300 + (Math.random() * 100 - 50);
+                                targetX = Math.max(25, Math.min(window.innerWidth - 25, targetX));
+                                targetY = Math.max(25, Math.min(window.innerHeight - 25, targetY));
+                                speed = 0.15;
+                            }
+
+                            snitchX += (targetX - snitchX) * speed;
+                            snitchY += (targetY - snitchY) * speed;
+                            
+                            const wobbleX = Math.sin(Date.now() * 0.005) * 15;
+                            const wobbleY = Math.cos(Date.now() * 0.007) * 15;
+                            snitch.style.transform = `translate(${snitchX + wobbleX}px, ${snitchY + wobbleY}px)`;
+                        }
+                        gsap.ticker.add(updateSnitch);
+
+                        snitch.addEventListener('click', () => {
+                            if (isCaught) return;
+                            isCaught = true;
+                            
+                            // Stop current animations to prevent glitching
+                            gsap.ticker.remove(updateSnitch);
+                            snitch.style.transition = 'none';
+                            
+                            // Convert internal matrix to GSAP properties smoothly
+                            gsap.set(snitch, { x: snitchX, y: snitchY });
+                            snitch.style.transform = ''; 
+                            
+                            document.querySelectorAll('.snitch-wing').forEach(w => w.style.animationPlayState = 'paused');
+                            
+                            gsap.to(snitch, {
+                                x: window.innerWidth / 2 - 12,
+                                y: window.innerHeight / 2 - 12,
+                                scale: 2.5,
+                                duration: 1.2,
+                                ease: "elastic.out(1, 0.4)",
+                                onStart: () => {
+                                    snitchPopup.innerHTML = "CAUGHT!<br><span style='font-size:14px; color:#fff;'>CODE: MAGIC15</span>";
+                                    snitchPopup.classList.add('show');
+                                    snitchPopup.style.background = "#740001";
+                                    snitchPopup.style.color = "#D4AF37";
+                                    snitchPopup.style.transform = "translateX(-50%) translateY(35px) scale(1.2)";
+                                }
+                            });
+                        });
+                    }
+                }
+
+                // --- AUDIO SETUP ---
+                const bgMusic = document.getElementById('bg-music');
+                const musicBtn = document.getElementById('music-btn');
+                const musicIcon = document.getElementById('music-icon');
+                const musicLabel = document.getElementById('music-label');
+                const musicReminder = document.getElementById('music-reminder');
+
+                if (bgMusic && musicBtn) {
+                    bgMusic.volume = 0.35;
+                    let reminderInterval;
+
+                    function startReminder() {
+                        if (reminderInterval) clearTimeout(reminderInterval);
+                        reminderInterval = setTimeout(() => {
+                            if (bgMusic.paused && musicReminder) {
+                                musicReminder.classList.remove('translate-y-4', 'opacity-0', 'pointer-events-none');
+                                setTimeout(() => musicReminder.classList.add('translate-y-4', 'opacity-0', 'pointer-events-none'), 7000);
+                            }
+                        }, 7000);
+                    }
+
+                    function stopReminder() {
+                        if (reminderInterval) clearTimeout(reminderInterval);
+                        if (musicReminder) musicReminder.classList.add('translate-y-4', 'opacity-0', 'pointer-events-none');
+                    }
+
+                    if (musicReminder) musicReminder.addEventListener('click', () => { bgMusic.play(); setMusicUI(false); });
+                    
+                    bgMusic.addEventListener('timeupdate', () => {
+                        if (!window.musicSaveTimeout) {
+                            window.musicSaveTimeout = setTimeout(() => {
+                                localStorage.setItem('musicTime', bgMusic.currentTime);
+                                localStorage.setItem('musicMuted', bgMusic.paused);
+                                window.musicSaveTimeout = null;
+                            }, 500);
+                        }
+                    });
+
+                    function setMusicUI(isMuted) {
+                        if (isMuted) {
+                            musicIcon.textContent = '♪'; musicLabel.textContent = 'MUTED';
+                            musicBtn.classList.add('muted'); startReminder();
+                        } else {
+                            musicIcon.textContent = '♪'; musicLabel.textContent = 'MUSIC';
+                            musicBtn.classList.remove('muted'); stopReminder();
+                        }
+                    }
+
+                    const savedTime = parseFloat(localStorage.getItem('musicTime')) || 0;
+                    const wasMuted = localStorage.getItem('musicMuted') === 'true';
+                    if (savedTime > 0) bgMusic.currentTime = savedTime;
+                    setMusicUI(wasMuted);
+                    
+                    if (!wasMuted) {
+                        const playPromise = bgMusic.play();
+                        if (playPromise !== undefined) playPromise.catch(() => setMusicUI(true));
+                    }
+
+                    musicBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (bgMusic.paused) { bgMusic.play(); setMusicUI(false); } 
+                        else { bgMusic.pause(); setMusicUI(true); }
+                    });
+                }
+
+                if (window.matchMedia("(hover: none)").matches) {
+                    const touchHoverObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            entry.target.classList.toggle('touch-hover', entry.isIntersecting);
+                        });
+                    }, { threshold: 0.5 });
+
+                    setTimeout(() => {
+                        document.querySelectorAll('.house-card, .movie-card, .ticket-3d-effect').forEach(el => {
+                            touchHoverObserver.observe(el);
+                        });
+                    }, 500);
+                }
+            }); // End GSAP Context
+        }); // End DOMContentLoaded
+        
+        
+    </script>
+    
+
+    <footer id="footer" class="relative z-10 border-t border-white/10 bg-[#030303]/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center gap-3 mb-6"><span class="font-montserrat cinematic-gold-text-sm text-3xl font-light tracking-wide uppercase">HOGWARTS</span></div>
+                    <p class="font-montserrat text-gray-400 text-sm leading-relaxed mb-6 uppercase font-light">An enchanted experience crafted with magic, passion, and a touch of wizardry. Every pixel tells a story from the Wizarding World.</p>
+                    <div class="font-montserrat flex items-center gap-2 text-xs text-gray-500 uppercase font-light"><i data-lucide="shield-check" class="w-4 h-4 text-white"></i><span>Protected by Nikil's Wizarding Bank</span></div>
+                </div>
+                <div>
+                    <h4 class="font-montserrat text-white font-light tracking-wider mb-6 uppercase">Explore</h4>
+                    <ul class="font-montserrat space-y-3 text-sm uppercase font-light">
+                        <li><a href="#hero" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> Great Hall</a></li>
+                        <li><a href="#station" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> Platform 9¾</a></li>
+                        <li><a href="#gallery" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> Characters</a></li>
+                        <li><a href="#houses" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> The Houses</a></li>
+                        <li><a href="alliance-gallery.html" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> Hall of Members</a></li>
+                        <li><a href="#movies" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> Chronicles</a></li>
+                        <li><a href="#vault" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> The Vault</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-montserrat text-white font-light tracking-wider mb-6 uppercase">Connect</h4>
+                    <div class="font-montserrat magic-glass rounded-xl px-4 py-3 flex items-center gap-3 mb-6"><i data-lucide="mail" class="w-4 h-4 text-white"></i><span class="text-gray-400 text-xs tracking-wider uppercase font-light">owl@nikilhogwarts.edu</span></div>
+                    <div class="flex gap-4">
+                        <a href="https://www.instagram.com/nikilmangroliya_/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full magic-glass flex items-center justify-center text-gray-400 hover:text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_10px_rgba(0,0,0,0.3)]">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.instagram.com/nikilmangroliya_/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full magic-glass flex items-center justify-center text-gray-400 hover:text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_10px_rgba(0,0,0,0.3)]">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/nikilmangroliya_/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full magic-glass flex items-center justify-center text-gray-400 hover:text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_10px_rgba(0,0,0,0.3)]">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="font-montserrat text-gray-500 text-xs tracking-wider uppercase font-light">© 2026 Hogwarts Enchanted Experience. All rights reserved by Nikil 😁.</p>
+                <div class="font-montserrat magic-glass rounded-full px-6 py-2.5 text-gray-400 text-xs tracking-wider uppercase font-light flex items-center gap-2 hover:border-white/40 transition-all">
+                    MADE BY <span class="font-montserrat text-white font-light tracking-[0.15em] text-sm">NIKIL MANGROLIYA</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

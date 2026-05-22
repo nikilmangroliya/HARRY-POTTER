@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" class="lenis lenis-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hogwarts Express | Platform 9 3/4</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Lenis Smooth Scroll Boilerplate */
+        html.lenis, html.lenis body { height: auto; width: 100vw; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+
+        body, html { 
+            margin: 0; padding: 0; 
+            background-color: #110e0c; color: #2C1A0F; 
+            font-family: 'Cormorant Garamond', serif; line-height: 1.6; 
+            overflow-x: hidden; width: 100%; max-width: 100vw; 
+            min-height: 100dvh; 
+        }
+        h1, h2, h3, h4 { font-family: 'Cinzel', serif; letter-spacing: 2px; color: #3e2723; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        
+        *:focus-visible { outline: 2px solid #740001; outline-offset: 2px; }
+        ::-webkit-scrollbar { display: none; }
+        * { scrollbar-width: none; }
+
+        .parchment-bg {
+            background-color: #F4E8C1;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            border: 6px double #5A3A18;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(90, 58, 24, 0.3);
+            position: relative;
+        }
+        .parchment-bg::before { content: ''; position: absolute; inset: 4px; border: 1px solid #8B5A2B; pointer-events: none; opacity: 0.5; }
+        
+        .parchment-input {
+            background-color: rgba(255, 255, 255, 0.3); border: 1px solid #8B5A2B; border-bottom: 2px solid #5A3A18;
+            color: #2C1A0F; transition: all 0.3s ease; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.1rem;
+        }
+        .parchment-input:focus { border-color: #740001; border-bottom-color: #740001; box-shadow: 0 4px 10px rgba(116, 0, 1, 0.1); outline: none; background-color: rgba(255, 255, 255, 0.5); }
+        .parchment-input::placeholder { color: #8B5A2B; opacity: 0.7; font-style: italic; }
+        select.parchment-input {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%235A3A18' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 3rem;
+        }
+
+        .btn-magic {
+            background-color: #740001; color: #F4E8C1; border: 2px solid #4A3018; transition: all 0.3s ease;
+            font-family: 'Cinzel', serif; letter-spacing: 3px; text-transform: uppercase; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .btn-magic:hover { background-color: #5A0001; box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 6px 20px rgba(0,0,0,0.5); transform: translateY(-2px); }
+        .text-glow { text-shadow: 0 0 20px rgba(220, 180, 80, 0.6); }
+
+        #success-overlay {
+            position: fixed; inset: 0; z-index: 200; background: rgba(15, 10, 5, 0.95); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow-y: auto; padding: 1rem; opacity: 0; visibility: hidden; 
+        }
+        
+        @keyframes checkDraw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+        .check-anim { stroke-dasharray: 100; stroke-dashoffset: 100; animation: checkDraw 0.8s ease forwards 0.3s; }
+        
+        .ticket-3d-effect {
+            transform-style: preserve-3d; transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .ticket-3d-effect:hover { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02); }
+        }
+        @media (hover: none) {
+            .ticket-3d-effect.touch-hover { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02); }
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed inset-0 z-0 pointer-events-none" style="isolation: isolate;">
+        <img src="assets/HARRY.jpg" alt="Bg" class="absolute inset-0 w-full h-full object-cover opacity-60" style="filter: sepia(0.6) brightness(0.4) contrast(1.2);">
+        <div class="absolute inset-0 backdrop-blur-sm bg-[#1a0f0a]/60"></div>
+    </div>
+
+    <nav class="fixed top-4 left-0 right-0 z-50 px-4 md:px-12 flex justify-between items-center max-w-7xl mx-auto">
+        <a href="index.html#station" class="parchment-bg px-3 py-2 sm:px-6 sm:py-3 flex items-center gap-2 sm:gap-3 hover:brightness-110 transition-all text-[#2C1A0F]" style="border-width: 2px;">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span class="font-cinzel font-bold tracking-[0.1em] sm:tracking-[0.2em] text-[10px] sm:text-sm">BACK TO PLATFORM</span>
+        </a>
+    </nav>
+
+    <main class="relative z-10 min-h-screen pt-20 sm:pt-28 pb-16 px-4 sm:px-6 md:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-6 sm:mb-10 md:mb-16">
+                <p class="text-[#E6C259] tracking-[0.3em] sm:tracking-[0.5em] text-[10px] sm:text-xs uppercase mb-2 text-glow font-bold">King's Cross Station</p>
+                <h1 class="font-cinzel text-xl sm:text-3xl md:text-5xl font-bold text-[#F4E8C1] mb-2 drop-shadow-lg px-2">Hogwarts Express Ticket</h1>
+                <p class="text-[#Eee3cf] text-xs sm:text-sm tracking-widest italic px-4">Register your details to board the scarlet steam engine</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 items-start">
+                
+                <div class="lg:col-span-5 order-1 lg:order-2 lg:sticky lg:top-32 flex justify-center w-full z-20">
+                    <div class="w-full max-w-lg h-auto aspect-auto sm:aspect-[1.7/1] relative rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.6)] border-2 border-[#D4AF37]/50 ticket-3d-effect transition-transform duration-500" style="background: linear-gradient(135deg, #740001 0%, #3a0000 100%);">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"2\" cy=\"2\" r=\"1\" fill=\"%23D4AF37\" opacity=\"0.1\"/></svg>')]"></div>
+                        <div class="absolute inset-3 border border-[#D4AF37]/30 pointer-events-none"></div>
+                        <div class="absolute inset-4 border border-dashed border-[#D4AF37]/40 pointer-events-none"></div>
+                        
+                        <div class="relative z-10 h-full p-5 sm:p-6 md:p-8 flex flex-col justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-[#D4AF37]/30 pb-2 gap-1 w-full">
+                                <h3 class="font-cinzel text-base sm:text-lg md:text-2xl text-[#D4AF37] font-bold tracking-widest uppercase break-words">Hogwarts Express</h3>
+                                <span class="font-montserrat text-[8px] sm:text-[10px] text-white/70 tracking-[0.2em] uppercase shrink-0">London to Hogsmeade</span>
+                            </div>
+                            
+                            <div class="flex-1 flex flex-col justify-center py-2 sm:py-4">
+                                <p class="font-montserrat text-[8px] sm:text-[10px] text-[#D4AF37] uppercase tracking-widest mb-1">Passenger</p>
+                                <p id="preview-name" class="font-cinzel text-sm sm:text-lg md:text-2xl lg:text-3xl text-white font-bold tracking-wider uppercase truncate">STUDENT NAME</p>
+                                <div class="flex gap-6 sm:gap-8 mt-3 sm:mt-4">
+                                    <div class="min-w-0">
+                                        <p class="font-montserrat text-[8px] sm:text-[9px] text-[#D4AF37] uppercase tracking-widest mb-0.5">Year</p>
+                                        <p id="preview-year" class="font-cinzel text-[11px] sm:text-sm text-white/90 truncate">First Year</p>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="font-montserrat text-[8px] sm:text-[9px] text-[#D4AF37] uppercase tracking-widest mb-0.5">Pet</p>
+                                        <p id="preview-pet" class="font-cinzel text-[11px] sm:text-sm text-white/90 truncate">None</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-end border-t border-[#D4AF37]/30 pt-3 w-full gap-2">
+                                <div class="min-w-0">
+                                    <p class="font-montserrat text-[8px] sm:text-[9px] text-[#D4AF37] uppercase tracking-[0.2em] mb-0.5">Date</p>
+                                    <p id="preview-date" class="font-cinzel text-[9px] sm:text-xs md:text-sm text-white font-bold tracking-wider uppercase truncate">SEPT 1ST, 11:00 AM</p>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <p class="font-montserrat text-[8px] sm:text-[9px] text-[#D4AF37] uppercase tracking-[0.2em] mb-0.5">Platform</p>
+                                    <p class="font-cinzel text-base sm:text-xl md:text-3xl text-white font-bold tracking-wider">9 ¾</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute top-1/2 -left-4 w-8 h-8 bg-[#110e0c] rounded-full transform -translate-y-1/2 border-r-2 border-[#D4AF37]/50"></div>
+                        <div class="absolute top-1/2 -right-4 w-8 h-8 bg-[#110e0c] rounded-full transform -translate-y-1/2 border-l-2 border-[#D4AF37]/50"></div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 order-2 lg:order-1 parchment-bg p-4 sm:p-6 md:p-10 relative overflow-hidden w-full z-10">
+                    <h2 class="font-cinzel text-lg sm:text-2xl font-bold text-[#2C1A0F] mb-6 flex items-center gap-3 border-b border-[#8B5A2B]/40 pb-4">
+                        <i data-lucide="pen-tool" class="w-5 h-5 sm:w-6 sm:h-6"></i> Passenger Details
+                    </h2>
+
+                    <form id="ticket-form" class="space-y-5 sm:space-y-6 relative z-10" onsubmit="return false;">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="sm:col-span-2 w-full">
+                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Student Full Name *</label>
+                                <input type="text" id="f-name" required placeholder="Harry Potter" class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base">
+                            </div>
+
+                            <div class="w-full">
+                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Academic Year *</label>
+                                <select id="f-year" required class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base appearance-none cursor-pointer">
+                                    <option value="" disabled selected class="text-[#8B5A2B]">Select Year</option>
+                                    <option value="First Year">First Year</option>
+                                    <option value="Second Year">Second Year</option>
+                                    <option value="Third Year">Third Year</option>
+                                </select>
+                            </div>
+
+                            <div class="w-full">
+                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Approved Pet</label>
+                                <select id="f-pet" class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base appearance-none cursor-pointer">
+                                    <option value="None" selected>None</option>
+                                    <option value="Owl">Owl</option>
+                                    <option value="Cat">Cat</option>
+                                </select>
+                            </div>
+
+                            <div class="w-full">
+                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Departure Date *</label>
+                                <select id="f-date" required class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base appearance-none cursor-pointer">
+                                    <option value="" disabled selected class="text-[#8B5A2B]">Select Date</option>
+                                    <option value="Sept 1st, 11:00 AM">Sept 1st, 11:00 AM</option>
+                                </select>
+                            </div>
+
+                            <div class="w-full">
+                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Owl Post Address (Email) *</label>
+                                <input type="email" id="f-email" required placeholder="student@hogwarts.edu" class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base">
+                            </div>
+                        </div>
+
+                        <div class="pt-5 sm:pt-6 border-t border-[#8B5A2B]/40">
+                            <button id="submit-btn" onclick="handleRegistration()" class="w-full btn-magic rounded px-4 py-3.5 sm:px-6 sm:py-4 flex items-center justify-center gap-3 cursor-pointer text-sm sm:text-base md:text-lg">
+                                <i data-lucide="ticket" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                                Issue Golden Ticket
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="success-overlay">
+        <div class="text-center w-full max-w-md mx-auto flex flex-col items-center justify-center success-content" style="opacity: 0; transform: translateY(20px);">
+            <div class="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 shrink-0">
+                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#D4AF37" stroke-width="3"/>
+                    <polyline class="check-anim" points="38,62 53,77 82,45" fill="none" stroke="#D4AF37" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h2 class="font-cinzel text-2xl sm:text-3xl md:text-4xl font-bold text-[#E6C259] mb-3 w-full">Ticket Issued!</h2>
+            <p class="text-gray-300 text-xs sm:text-sm md:text-base mb-2 w-full">Your golden ticket has been printed for the <span class="text-[#E6C259] font-bold font-cinzel">Hogwarts Express</span>.</p>
+            
+            <div class="flex flex-col gap-3 w-full px-4 mt-8">
+                <button onclick="downloadTicketPDF(this)" class="inline-flex justify-center items-center gap-2 btn-magic rounded px-5 py-3 w-full text-sm">
+                    <i data-lucide="download" class="w-4 h-4"></i> Save PDF
+                </button>
+                <a href="index.html?returned=true#station" class="inline-flex justify-center items-center gap-2 btn-magic rounded px-5 py-3 w-full text-sm">
+                    <i data-lucide="train" class="w-4 h-4"></i> Board Train
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdf-ticket-wrapper" style="position: absolute; pointer-events: none; z-index: -9999; top: 0; left: -9999px;">
+        <div id="pdf-ticket-container" style="width: 800px; height: 400px; background: linear-gradient(135deg, #740001 0%, #3a0000 100%); border: 4px solid #D4AF37; padding: 30px; box-sizing: border-box; position: relative;">
+            <div style="position: absolute; inset: 12px; border: 2px dashed rgba(212,175,55,0.5); pointer-events: none;"></div>
+            <div style="text-align: center; border-bottom: 2px solid rgba(212,175,55,0.4); padding-bottom: 15px; margin-bottom: 30px;">
+                <h1 style="font-family: 'Cinzel', serif; font-size: 52px; color: #D4AF37; margin: 0; letter-spacing: 8px; font-weight: 900; text-transform: uppercase;">Hogwarts Express</h1>
+                <p style="font-family: 'Montserrat', sans-serif; font-size: 16px; color: #FFF; opacity: 0.8; letter-spacing: 10px; text-transform: uppercase; margin: 10px 0 0; font-weight: bold;">London to Hogsmeade</p>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; font-family: 'Montserrat', sans-serif; padding: 0 20px;">
+                <div style="flex: 1;">
+                    <p style="font-size: 12px; color: #D4AF37; letter-spacing: 3px; margin: 0 0 5px; text-transform: uppercase; font-weight: bold;">Passenger</p>
+                    <h2 id="pdf-name" style="font-family: 'Cinzel', serif; font-size: 38px; color: #FFF; margin: 0 0 30px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">Student Name</h2>
+                    
+                    <div style="display: flex; gap: 50px;">
+                        <div>
+                            <p style="font-size: 12px; color: #D4AF37; letter-spacing: 3px; margin: 0 0 5px; text-transform: uppercase; font-weight: bold;">Year</p>
+                            <p id="pdf-year" style="font-family: 'Cinzel', serif; font-size: 24px; color: rgba(255,255,255,0.9); margin: 0; font-weight: bold;">First Year</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 12px; color: #D4AF37; letter-spacing: 3px; margin: 0 0 5px; text-transform: uppercase; font-weight: bold;">Approved Pet</p>
+                            <p id="pdf-pet" style="font-family: 'Cinzel', serif; font-size: 24px; color: rgba(255,255,255,0.9); margin: 0; font-weight: bold;">Owl</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: right; flex: 0.6; border-left: 2px solid rgba(212,175,55,0.4); padding-left: 40px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <p style="font-size: 12px; color: #D4AF37; letter-spacing: 3px; margin: 0 0 5px; text-transform: uppercase; font-weight: bold;">Departure Date</p>
+                        <p id="pdf-date" style="font-family: 'Cinzel', serif; font-size: 24px; color: #FFF; margin: 0; font-weight: bold; text-transform: uppercase;">Sept 1st, 11:00 AM</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 12px; color: #D4AF37; letter-spacing: 3px; margin: 0 0 5px; text-transform: uppercase; font-weight: bold;">Platform</p>
+                        <p style="font-family: 'Cinzel', serif; font-size: 48px; color: #D4AF37; margin: 0; font-weight: 900;">9 ¾</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // Refined Lenis for Buttery Feel Syncing with GSAP
+            const lenis = new Lenis({ 
+                duration: 1.5, 
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
+                smoothWheel: true, 
+                wheelMultiplier: 1.2,
+                touchMultiplier: 2 
+            });
+            gsap.ticker.add((time) => lenis.raf(time * 1000));
+            gsap.ticker.lagSmoothing(0);
+
+            // Fetch URL Params
+            const trainParams = new URLSearchParams(window.location.search);
+            const studentName = trainParams.get('name');
+            const nameInput = document.getElementById('f-name');
+            if (studentName && nameInput) nameInput.value = studentName;
+
+            // Live Preview Logic
+            const yearInput = document.getElementById('f-year');
+            const petInput = document.getElementById('f-pet');
+            const dateInput = document.getElementById('f-date');
+            
+            const preName = document.getElementById('preview-name');
+            const preYear = document.getElementById('preview-year');
+            const prePet = document.getElementById('preview-pet');
+            const preDate = document.getElementById('preview-date');
+
+            if(studentName) preName.textContent = studentName;
+
+            if (nameInput) nameInput.addEventListener('input', e => preName.textContent = e.target.value.trim() || 'STUDENT NAME');
+            if (yearInput) yearInput.addEventListener('change', e => preYear.textContent = e.target.value || 'First Year');
+            if (petInput) petInput.addEventListener('change', e => prePet.textContent = e.target.value || 'None');
+            if (dateInput) dateInput.addEventListener('change', e => preDate.textContent = e.target.value || 'SEPT 1ST, 11:00 AM');
+
+            window.handleRegistration = function() {
+                const form = document.getElementById('ticket-form');
+                const required = form.querySelectorAll('[required]');
+                let valid = true;
+
+                required.forEach(input => {
+                    if (!input.value.trim()) {
+                        valid = false;
+                        input.style.borderColor = '#ef4444';
+                        input.addEventListener('input', () => { input.style.borderColor = 'rgba(212, 175, 55, 0.3)'; }, { once: true });
+                    }
+                });
+
+                if (!valid) return;
+
+                const btn = document.getElementById('submit-btn');
+                btn.innerHTML = 'Stamping...';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    lenis.stop();
+                    const overlay = document.getElementById('success-overlay');
+                    gsap.to(overlay, { autoAlpha: 1, duration: 0.3 });
+                    gsap.to('.success-content', { opacity: 1, y: 0, duration: 0.5, delay: 0.1 });
+                    lucide.createIcons();
+                }, 1500);
+            }
+
+            window.downloadTicketPDF = function(btn) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = 'Saving...';
+                btn.disabled = true;
+
+                const name = document.getElementById('f-name').value || 'Student';
+                const yearSel = document.getElementById('f-year');
+                const year = yearSel.options[yearSel.selectedIndex]?.text || 'First Year';
+                const petSel = document.getElementById('f-pet');
+                const pet = petSel.options[petSel.selectedIndex]?.text || 'None';
+                const dateSel = document.getElementById('f-date');
+                const date = dateSel.options[dateSel.selectedIndex]?.text || 'Sept 1st, 11:00 AM';
+
+                document.getElementById('pdf-name').innerText = name;
+                document.getElementById('pdf-year').innerText = year;
+                document.getElementById('pdf-pet').innerText = pet;
+                document.getElementById('pdf-date').innerText = date;
+
+                const element = document.getElementById('pdf-ticket-container');
+                html2pdf().set({
+                    margin: 0, filename: `Hogwarts_Express_Ticket_${name}.pdf`,
+                    image: { type: 'jpeg', quality: 1.0 },
+                    html2canvas: { scale: 3, backgroundColor: null, useCORS: true },
+                    jsPDF: { unit: 'px', format: [800, 400], orientation: 'landscape' }
+                }).from(element).save().then(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+            }
+
+            // Auto Hover System for Touch Devices
+            if (window.matchMedia("(hover: none)").matches) {
+                const touchHoverObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('touch-hover');
+                        } else {
+                            entry.target.classList.remove('touch-hover');
+                        }
+                    });
+                }, { threshold: 0.4 });
+
+                setTimeout(() => {
+                    document.querySelectorAll('.ticket-3d-effect').forEach(el => touchHoverObserver.observe(el));
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>
