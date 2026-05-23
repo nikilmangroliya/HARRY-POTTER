@@ -10,6 +10,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -35,24 +38,26 @@
         * { scrollbar-width: none; }
 
         .parchment-bg {
-            background-color: #F4E8C1;
-            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
-            border: 6px double #5A3A18;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(90, 58, 24, 0.3);
-            position: relative;
+            background: linear-gradient(135deg, rgba(16, 20, 28, 0.5), rgba(10, 12, 18, 0.7));
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2); border-top: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), inset 0 1px 0 rgba(212,175,55,0.15);
+            color: #E2E8F0;
+            border-radius: 16px;
         }
-        .parchment-bg::before { content: ''; position: absolute; inset: 4px; border: 1px solid #8B5A2B; pointer-events: none; opacity: 0.5; }
+        h1, h2, h3, h4 { color: #E6C259; }
         
         .parchment-input {
-            background-color: rgba(255, 255, 255, 0.3); border: 1px solid #8B5A2B; border-bottom: 2px solid #5A3A18;
-            color: #2C1A0F; transition: all 0.3s ease; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.1rem;
+            background-color: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 175, 55, 0.3); border-bottom: 2px solid rgba(212, 175, 55, 0.5);
+            color: #E2E8F0; transition: all 0.3s ease; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.1rem;
         }
-        .parchment-input:focus { border-color: #740001; border-bottom-color: #740001; box-shadow: 0 4px 10px rgba(116, 0, 1, 0.1); outline: none; background-color: rgba(255, 255, 255, 0.5); }
-        .parchment-input::placeholder { color: #8B5A2B; opacity: 0.7; font-style: italic; }
+        .parchment-input:focus { border-color: #D4AF37; border-bottom-color: #D4AF37; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2); outline: none; background-color: rgba(0, 0, 0, 0.5); }
+        .parchment-input::placeholder { color: rgba(212, 175, 55, 0.5); opacity: 0.7; font-style: italic; }
         select.parchment-input {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%235A3A18' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 3rem;
         }
+        select.parchment-input option { background-color: #110e0c; color: #E2E8F0; }
 
         .btn-magic {
             background-color: #740001; color: #F4E8C1; border: 2px solid #4A3018; transition: all 0.3s ease;
@@ -75,11 +80,14 @@
         .ticket-3d-effect {
             transform-style: preserve-3d; transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
         }
-        @media (hover: hover) and (pointer: fine) {
-            .ticket-3d-effect:hover { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02); }
-        }
+        .ticket-3d-effect .z-10 { transform: translateZ(30px); transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .ticket-3d-effect:hover .z-10, .ticket-3d-effect.touch-hover .z-10 { transform: translateZ(50px); }
         @media (hover: none) {
             .ticket-3d-effect.touch-hover { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02); }
+        }
+        .section-glass {
+            background: transparent;
+            border: none;
         }
     </style>
 </head>
@@ -90,15 +98,15 @@
     </div>
 
     <nav class="fixed top-4 left-0 right-0 z-50 px-4 md:px-12 flex justify-between items-center max-w-7xl mx-auto">
-        <a href="index.html#station" class="parchment-bg px-3 py-2 sm:px-6 sm:py-3 flex items-center gap-2 sm:gap-3 hover:brightness-110 transition-all text-[#2C1A0F]" style="border-width: 2px;">
+        <a href="index.html#station" class="parchment-bg px-3 py-2 sm:px-6 sm:py-3 flex items-center gap-2 sm:gap-3 hover:brightness-110 transition-all text-[#E2E8F0]" style="border-width: 2px; border-radius: 100px;">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span class="font-cinzel font-bold tracking-[0.1em] sm:tracking-[0.2em] text-[10px] sm:text-sm">BACK TO PLATFORM</span>
         </a>
     </nav>
 
-    <main class="relative z-10 min-h-screen pt-20 sm:pt-28 pb-16 px-4 sm:px-6 md:px-8">
+    <main class="section-glass relative z-10 min-h-screen pt-20 sm:pt-28 pb-16 px-4 sm:px-6 md:px-8">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-6 sm:mb-10 md:mb-16">
+            <div class="text-center mb-6 sm:mb-10 md:mb-16" data-aos="fade-down">
                 <p class="text-[#E6C259] tracking-[0.3em] sm:tracking-[0.5em] text-[10px] sm:text-xs uppercase mb-2 text-glow font-bold">King's Cross Station</p>
                 <h1 class="font-cinzel text-xl sm:text-3xl md:text-5xl font-bold text-[#F4E8C1] mb-2 drop-shadow-lg px-2">Hogwarts Express Ticket</h1>
                 <p class="text-[#Eee3cf] text-xs sm:text-sm tracking-widest italic px-4">Register your details to board the scarlet steam engine</p>
@@ -106,11 +114,15 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 items-start">
                 
-                <div class="lg:col-span-5 order-1 lg:order-2 lg:sticky lg:top-32 flex justify-center w-full z-20">
-                    <div class="w-full max-w-lg h-auto aspect-auto sm:aspect-[1.7/1] relative rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.6)] border-2 border-[#D4AF37]/50 ticket-3d-effect transition-transform duration-500" style="background: linear-gradient(135deg, #740001 0%, #3a0000 100%);">
-                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"2\" cy=\"2\" r=\"1\" fill=\"%23D4AF37\" opacity=\"0.1\"/></svg>')]"></div>
-                        <div class="absolute inset-3 border border-[#D4AF37]/30 pointer-events-none"></div>
-                        <div class="absolute inset-4 border border-dashed border-[#D4AF37]/40 pointer-events-none"></div>
+                <div class="lg:col-span-5 order-1 lg:order-2 lg:sticky lg:top-32 flex justify-center w-full z-20" data-aos="fade-left" data-aos-delay="200">
+                    <div class="w-full max-w-lg h-auto aspect-auto sm:aspect-[1.7/1] relative rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border-2 border-[#D4AF37]/50 ticket-3d-effect transition-transform duration-500" style="background: linear-gradient(135deg, #740001 0%, #3a0000 100%);" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-scale="1.02" data-tilt-glare="true" data-tilt-max-glare="0.3">
+                        <div class="absolute inset-0 rounded-xl overflow-hidden pointer-events-none z-0">
+                            <div class="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"2\" cy=\"2\" r=\"1\" fill=\"%23D4AF37\" opacity=\"0.1\"/></svg>')]"></div>
+                            <div class="absolute top-1/2 -left-4 w-8 h-8 bg-[#110e0c] rounded-full transform -translate-y-1/2 border-r-2 border-[#D4AF37]/50"></div>
+                            <div class="absolute top-1/2 -right-4 w-8 h-8 bg-[#110e0c] rounded-full transform -translate-y-1/2 border-l-2 border-[#D4AF37]/50"></div>
+                        </div>
+                        <div class="absolute inset-3 border border-[#D4AF37]/30 pointer-events-none z-10" style="transform: translateZ(15px);"></div>
+                        <div class="absolute inset-4 border border-dashed border-[#D4AF37]/40 pointer-events-none z-10" style="transform: translateZ(25px);"></div>
                         
                         <div class="relative z-10 h-full p-5 sm:p-6 md:p-8 flex flex-col justify-between gap-4">
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-[#D4AF37]/30 pb-2 gap-1 w-full">
@@ -144,27 +156,25 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="absolute top-1/2 -left-4 w-8 h-8 bg-[#110e0c] rounded-full transform -translate-y-1/2 border-r-2 border-[#D4AF37]/50"></div>
-                        <div class="absolute top-1/2 -right-4 w-8 h-8 bg-[#110e0c] rounded-full transform -translate-y-1/2 border-l-2 border-[#D4AF37]/50"></div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-7 order-2 lg:order-1 parchment-bg p-4 sm:p-6 md:p-10 relative overflow-hidden w-full z-10">
-                    <h2 class="font-cinzel text-lg sm:text-2xl font-bold text-[#2C1A0F] mb-6 flex items-center gap-3 border-b border-[#8B5A2B]/40 pb-4">
+                <div class="lg:col-span-7 order-2 lg:order-1 parchment-bg p-4 sm:p-6 md:p-10 relative overflow-hidden w-full z-10" data-aos="fade-right">
+                    <h2 class="font-cinzel text-lg sm:text-2xl font-bold text-[#D4AF37] mb-6 flex items-center gap-3 border-b border-[#D4AF37]/40 pb-4">
                         <i data-lucide="pen-tool" class="w-5 h-5 sm:w-6 sm:h-6"></i> Passenger Details
                     </h2>
 
                     <form id="ticket-form" class="space-y-5 sm:space-y-6 relative z-10" onsubmit="return false;">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                             <div class="sm:col-span-2 w-full">
-                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Student Full Name *</label>
+                                <label class="block text-[10px] sm:text-xs text-gray-400 font-bold tracking-widest uppercase mb-2">Student Full Name *</label>
                                 <input type="text" id="f-name" required placeholder="Harry Potter" class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base">
                             </div>
 
                             <div class="w-full">
-                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Academic Year *</label>
+                                <label class="block text-[10px] sm:text-xs text-gray-400 font-bold tracking-widest uppercase mb-2">Academic Year *</label>
                                 <select id="f-year" required class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base appearance-none cursor-pointer">
-                                    <option value="" disabled selected class="text-[#8B5A2B]">Select Year</option>
+                                    <option value="" disabled selected class="text-gray-500">Select Year</option>
                                     <option value="First Year">First Year</option>
                                     <option value="Second Year">Second Year</option>
                                     <option value="Third Year">Third Year</option>
@@ -172,7 +182,7 @@
                             </div>
 
                             <div class="w-full">
-                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Approved Pet</label>
+                                <label class="block text-[10px] sm:text-xs text-gray-400 font-bold tracking-widest uppercase mb-2">Approved Pet</label>
                                 <select id="f-pet" class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base appearance-none cursor-pointer">
                                     <option value="None" selected>None</option>
                                     <option value="Owl">Owl</option>
@@ -181,20 +191,20 @@
                             </div>
 
                             <div class="w-full">
-                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Departure Date *</label>
+                                <label class="block text-[10px] sm:text-xs text-gray-400 font-bold tracking-widest uppercase mb-2">Departure Date *</label>
                                 <select id="f-date" required class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base appearance-none cursor-pointer">
-                                    <option value="" disabled selected class="text-[#8B5A2B]">Select Date</option>
+                                    <option value="" disabled selected class="text-gray-500">Select Date</option>
                                     <option value="Sept 1st, 11:00 AM">Sept 1st, 11:00 AM</option>
                                 </select>
                             </div>
 
                             <div class="w-full">
-                                <label class="block text-[10px] sm:text-xs text-[#5A3A18] font-bold tracking-widest uppercase mb-2">Owl Post Address (Email) *</label>
+                                <label class="block text-[10px] sm:text-xs text-gray-400 font-bold tracking-widest uppercase mb-2">Owl Post Address (Email) *</label>
                                 <input type="email" id="f-email" required placeholder="student@hogwarts.edu" class="w-full parchment-input rounded px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base">
                             </div>
                         </div>
 
-                        <div class="pt-5 sm:pt-6 border-t border-[#8B5A2B]/40">
+                        <div class="pt-5 sm:pt-6 border-t border-[#D4AF37]/40">
                             <button id="submit-btn" onclick="handleRegistration()" class="w-full btn-magic rounded px-4 py-3.5 sm:px-6 sm:py-4 flex items-center justify-center gap-3 cursor-pointer text-sm sm:text-base md:text-lg">
                                 <i data-lucide="ticket" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                                 Issue Golden Ticket
@@ -270,6 +280,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 50
+            });
 
             // Refined Lenis for Buttery Feel Syncing with GSAP
             const lenis = new Lenis({ 
