@@ -11,6 +11,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     
@@ -50,25 +53,29 @@
         * { scrollbar-width: none; }
         
         .parchment-bg {
-            background-color: #F4E8C1;
-            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
-            border: 6px double #5A3A18;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(90, 58, 24, 0.3);
-            position: relative;
+            background: linear-gradient(135deg, rgba(16, 20, 28, 0.5), rgba(10, 12, 18, 0.7));
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2); border-top: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), inset 0 1px 0 rgba(212,175,55,0.15);
+            color: #E2E8F0;
+            border-radius: 16px;
         }
-        .parchment-bg::before { content: ''; position: absolute; inset: 4px; border: 1px solid #8B5A2B; pointer-events: none; opacity: 0.5; }
+        h1, h2, h3, h4 { color: #E6C259; }
+        .parchment-bg[data-tilt] { transform-style: preserve-3d; }
+        .parchment-bg[data-tilt] > h2, .parchment-bg[data-tilt] > div { transform: translateZ(20px); transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .parchment-bg[data-tilt]:hover > h2, .parchment-bg[data-tilt]:hover > div { transform: translateZ(40px); }
         
         .parchment-input {
-            background-color: rgba(255, 255, 255, 0.3); border: 1px solid #8B5A2B; border-bottom: 2px solid #5A3A18;
-            color: #2C1A0F; transition: all 0.3s ease; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.1rem;
+            background-color: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 175, 55, 0.3); border-bottom: 2px solid rgba(212, 175, 55, 0.5);
+            color: #E2E8F0; transition: all 0.3s ease; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.1rem;
         }
-        .parchment-input:focus { border-color: #740001; border-bottom-color: #740001; box-shadow: 0 4px 10px rgba(116, 0, 1, 0.1); outline: none; background-color: rgba(255, 255, 255, 0.5); }
-        .parchment-input::placeholder { color: #8B5A2B; opacity: 0.7; font-style: italic; }
+        .parchment-input:focus { border-color: #D4AF37; border-bottom-color: #D4AF37; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2); outline: none; background-color: rgba(0, 0, 0, 0.5); }
+        .parchment-input::placeholder { color: rgba(212, 175, 55, 0.5); opacity: 0.7; font-style: italic; }
         select.parchment-input {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%235A3A18' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 3rem; 
         }
-        select.parchment-input option { background-color: #F4E8C1; color: #2C1A0F; }
+        select.parchment-input option { background-color: #110e0c; color: #E2E8F0; }
 
         .btn-magic {
             background-color: #740001; color: #F4E8C1; border: 2px solid #4A3018; transition: all 0.3s ease;
@@ -99,10 +106,16 @@
             box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), inset 0 1px 0 rgba(212,175,55,0.15);
         }
         
+        #music-btn { background-color: #E6C259; color: #110e0c; border-color: #D4AF37; text-shadow: none; box-shadow: 0 4px 15px rgba(228, 194, 89, 0.4); }
+        #music-btn:hover { background-color: #F4E8C1; box-shadow: 0 6px 20px rgba(228, 194, 89, 0.6); }
         #music-icon { animation: musicPulse 1.5s ease-in-out infinite; }
         #music-btn.muted #music-icon { animation: none; opacity: 0.4; }
         #music-btn.muted #music-label { opacity: 0.4; }
         @keyframes musicPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } }
+        .section-glass {
+            background: transparent;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -113,77 +126,77 @@
     </div>
 
     <nav class="fixed top-6 left-0 right-0 z-50 px-4 md:px-12 flex justify-between items-center max-w-7xl mx-auto">
-        <a href="index.html" class="parchment-bg px-6 py-3 flex items-center gap-3 hover:brightness-110 transition-all text-[#2C1A0F]" style="border-width: 2px;">
+        <a href="index.html" class="parchment-bg px-6 py-3 flex items-center gap-3 hover:brightness-110 transition-all text-[#E2E8F0]" style="border-width: 2px; border-radius: 100px;">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span class="font-cinzel font-bold tracking-[0.2em] text-sm">BACK TO VAULT</span>
         </a>
     </nav>
 
-    <main class="relative z-10 min-h-screen pt-28 pb-20 px-4 md:px-8">
+    <main class="section-glass relative z-10 min-h-screen pt-28 pb-20 px-4 md:px-8">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-12">
+            <div class="text-center mb-12" data-aos="fade-down">
                 <p class="text-[#E6C259] tracking-[0.5em] text-xs uppercase mb-3 text-glow font-bold">Diagon Alley</p>
                 <h1 class="font-cinzel text-4xl md:text-6xl font-bold text-[#F4E8C1] mb-3 drop-shadow-lg">Complete Your Purchase</h1>
                 <p class="text-[#Eee3cf] text-sm tracking-widest italic">Fill in your details to acquire this magical artifact</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
-                <div class="lg:col-span-2 order-2 lg:order-2">
-                    <div class="parchment-bg p-6 md:p-8 sticky top-28">
-                        <h2 class="font-cinzel text-2xl font-bold text-[#2C1A0F] mb-6 tracking-wider flex items-center gap-3 border-b border-[#8B5A2B]/40 pb-4">
+                <div class="lg:col-span-2 order-2 lg:order-2" data-aos="fade-left" data-aos-delay="200">
+                    <div class="parchment-bg p-6 md:p-8 sticky top-28" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.1">
+                        <h2 class="font-cinzel text-2xl font-bold text-[#D4AF37] mb-6 tracking-wider flex items-center gap-3 border-b border-[#D4AF37]/40 pb-4">
                             <i data-lucide="scroll-text" class="w-6 h-6"></i> Order Scroll
                         </h2>
                         <div class="flex gap-5 mb-6">
-                            <div class="w-24 h-24 overflow-hidden border-2 border-[#5A3A18] shrink-0">
+                            <div class="w-24 h-24 overflow-hidden border-2 border-[#D4AF37]/50 rounded-lg shrink-0">
                                 <img id="checkout-img" src="" class="w-full h-full object-cover">
                             </div>
                             <div class="flex-1">
-                                <h3 id="checkout-title" class="font-cinzel text-xl text-[#2C1A0F] font-bold mb-1"></h3>
-                                <p id="checkout-sub" class="text-[#5A3A18] text-xs tracking-[0.2em] uppercase font-bold mb-3"></p>
-                                <span id="checkout-price" class="text-[#740001] font-bold text-xl tracking-wider"></span>
+                                <h3 id="checkout-title" class="font-cinzel text-xl text-[#E6C259] font-bold mb-1"></h3>
+                                <p id="checkout-sub" class="text-gray-400 text-xs tracking-[0.2em] uppercase font-bold mb-3"></p>
+                                <span id="checkout-price" class="text-[#D4AF37] font-bold text-xl tracking-wider"></span>
                             </div>
                         </div>
-                        <div class="border-t border-[#8B5A2B]/40 pt-5 space-y-3 font-semibold">
-                            <div class="flex justify-between text-sm"><span class="text-[#5A3A18]">Subtotal</span><span id="s-subtotal" class="text-[#2C1A0F]"></span></div>
-                            <div class="flex justify-between text-sm"><span class="text-[#5A3A18]">Owl Delivery</span><span class="text-[#1A472A]">Free</span></div>
-                            <div class="flex justify-between text-sm"><span class="text-[#5A3A18]">Gringotts Tax</span><span id="s-tax" class="text-[#2C1A0F]"></span></div>
-                            <div class="border-t border-[#8B5A2B]/40 pt-3 flex justify-between"><span class="text-[#2C1A0F] font-bold tracking-wider text-lg">Total</span><span id="s-total" class="text-[#740001] font-bold text-2xl"></span></div>
+                        <div class="border-t border-[#D4AF37]/40 pt-5 space-y-3 font-semibold">
+                            <div class="flex justify-between text-sm"><span class="text-gray-400">Subtotal</span><span id="s-subtotal" class="text-[#E2E8F0]"></span></div>
+                            <div class="flex justify-between text-sm"><span class="text-gray-400">Owl Delivery</span><span class="text-[#27AE60]">Free</span></div>
+                            <div class="flex justify-between text-sm"><span class="text-gray-400">Gringotts Tax</span><span id="s-tax" class="text-[#E2E8F0]"></span></div>
+                            <div class="border-t border-[#D4AF37]/40 pt-3 flex justify-between"><span class="text-[#E2E8F0] font-bold tracking-wider text-lg">Total</span><span id="s-total" class="text-[#D4AF37] font-bold text-2xl"></span></div>
                         </div>
-                        <div class="mt-6 flex items-center gap-3 text-xs text-[#5A3A18] font-bold border-t border-[#8B5A2B]/40 pt-4">
+                        <div class="mt-6 flex items-center gap-3 text-xs text-gray-400 font-bold border-t border-[#D4AF37]/40 pt-4">
                             <i data-lucide="shield-check" class="w-4 h-4 text-[#1A472A]"></i>
                             <span>Protected by Nikil's Wizarding Bank Security</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-3 order-1 lg:order-1">
+                <div class="lg:col-span-3 order-1 lg:order-1" data-aos="fade-right">
                     <form id="checkout-form" class="space-y-8" onsubmit="return false;">
                         <div class="parchment-bg p-6 md:p-8">
-                            <h2 class="font-cinzel text-2xl font-bold text-[#2C1A0F] mb-6 flex items-center gap-3 border-b border-[#8B5A2B]/40 pb-4">
-                                <div class="w-8 h-8 rounded-full bg-[#5A3A18] flex items-center justify-center text-[#F4E8C1]"><span class="text-sm font-bold">1</span></div> Personal Details
+                            <h2 class="font-cinzel text-2xl font-bold text-[#D4AF37] mb-6 flex items-center gap-3 border-b border-[#D4AF37]/40 pb-4">
+                                <div class="w-8 h-8 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37]"><span class="text-sm font-bold">1</span></div> Personal Details
                             </h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <div><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">First Name *</label><input type="text" id="f-fname" required placeholder="Harry" class="w-full parchment-input rounded px-4 py-3"></div>
-                                <div><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">Last Name *</label><input type="text" id="f-lname" required placeholder="Potter" class="w-full parchment-input rounded px-4 py-3"></div>
-                                <div class="md:col-span-2"><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">Email Address *</label><input type="email" id="f-email" required placeholder="harry@hogwarts.edu" class="w-full parchment-input rounded px-4 py-3"></div>
-                                <div class="md:col-span-2"><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">Owl Post Number</label><input type="tel" id="f-phone" placeholder="+44 7700 900000" class="w-full parchment-input rounded px-4 py-3"></div>
+                                <div><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">First Name *</label><input type="text" id="f-fname" required placeholder="Harry" class="w-full parchment-input rounded px-4 py-3"></div>
+                                <div><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">Last Name *</label><input type="text" id="f-lname" required placeholder="Potter" class="w-full parchment-input rounded px-4 py-3"></div>
+                                <div class="md:col-span-2"><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">Email Address *</label><input type="email" id="f-email" required placeholder="harry@hogwarts.edu" class="w-full parchment-input rounded px-4 py-3"></div>
+                                <div class="md:col-span-2"><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">Owl Post Number</label><input type="tel" id="f-phone" placeholder="+44 7700 900000" class="w-full parchment-input rounded px-4 py-3"></div>
                             </div>
                         </div>
 
                         <div class="parchment-bg p-6 md:p-8">
-                            <h2 class="font-cinzel text-2xl font-bold text-[#2C1A0F] mb-6 flex items-center gap-3 border-b border-[#8B5A2B]/40 pb-4">
-                                <div class="w-8 h-8 rounded-full bg-[#5A3A18] flex items-center justify-center text-[#F4E8C1]"><span class="text-sm font-bold">2</span></div> Delivery Address
+                            <h2 class="font-cinzel text-2xl font-bold text-[#D4AF37] mb-6 flex items-center gap-3 border-b border-[#D4AF37]/40 pb-4">
+                                <div class="w-8 h-8 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37]"><span class="text-sm font-bold">2</span></div> Delivery Address
                             </h2>
                             <div class="grid grid-cols-1 gap-5">
-                                <div><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">Street Address *</label><input type="text" id="f-address" required placeholder="4 Privet Drive" class="w-full parchment-input rounded px-4 py-3"></div>
+                                <div><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">Street Address *</label><input type="text" id="f-address" required placeholder="4 Privet Drive" class="w-full parchment-input rounded px-4 py-3"></div>
                                 <div class="grid grid-cols-2 gap-5">
-                                    <div><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">City *</label><input type="text" id="f-city" required placeholder="Little Whinging" class="w-full parchment-input rounded px-4 py-3"></div>
-                                    <div><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">Postal Code *</label><input type="text" id="f-postal" required placeholder="SU3 2QH" class="w-full parchment-input rounded px-4 py-3"></div>
+                                    <div><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">City *</label><input type="text" id="f-city" required placeholder="Little Whinging" class="w-full parchment-input rounded px-4 py-3"></div>
+                                    <div><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">Postal Code *</label><input type="text" id="f-postal" required placeholder="SU3 2QH" class="w-full parchment-input rounded px-4 py-3"></div>
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">Country *</label>
+                                    <label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">Country *</label>
                                     <select id="f-country" required class="w-full parchment-input rounded px-4 py-3 appearance-none cursor-pointer">
-                                        <option value="" disabled selected class="text-[#8B5A2B]">Select your realm</option>
+                                        <option value="" disabled selected class="text-gray-500">Select your realm</option>
                                         <option value="UK">United Kingdom</option>
                                         <option value="US">United States</option>
                                         <option value="IN">India</option>
@@ -193,16 +206,16 @@
                         </div>
 
                         <div class="parchment-bg p-6 md:p-8">
-                            <h2 class="font-cinzel text-2xl font-bold text-[#2C1A0F] mb-6 flex items-center gap-3 border-b border-[#8B5A2B]/40 pb-4">
-                                <div class="w-8 h-8 rounded-full bg-[#5A3A18] flex items-center justify-center text-[#F4E8C1]"><span class="text-sm font-bold">3</span></div> Gringotts Payment
+                            <h2 class="font-cinzel text-2xl font-bold text-[#D4AF37] mb-6 flex items-center gap-3 border-b border-[#D4AF37]/40 pb-4">
+                                <div class="w-8 h-8 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37]"><span class="text-sm font-bold">3</span></div> Gringotts Payment
                             </h2>
                             <div class="grid grid-cols-1 gap-5">
-                                <div><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">Card Number *</label><input type="text" id="f-card" inputmode="numeric" required placeholder="1234 5678 9012 3456" maxlength="19" class="w-full parchment-input rounded px-4 py-3 tracking-widest"></div>
+                                <div><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">Card Number *</label><input type="text" id="f-card" inputmode="numeric" required placeholder="1234 5678 9012 3456" maxlength="19" class="w-full parchment-input rounded px-4 py-3 tracking-widest"></div>
                                 <div class="grid grid-cols-2 gap-5">
-                                    <div><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">Expiry *</label><input type="text" id="f-expiry" inputmode="numeric" required placeholder="MM / YY" maxlength="7" class="w-full parchment-input rounded px-4 py-3 tracking-widest"></div>
-                                    <div><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">CVV *</label><input type="password" id="f-cvv" inputmode="numeric" required placeholder="•••" maxlength="4" class="w-full parchment-input rounded px-4 py-3 tracking-widest"></div>
+                                    <div><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">Expiry *</label><input type="text" id="f-expiry" inputmode="numeric" required placeholder="MM / YY" maxlength="7" class="w-full parchment-input rounded px-4 py-3 tracking-widest"></div>
+                                    <div><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">CVV *</label><input type="password" id="f-cvv" inputmode="numeric" required placeholder="•••" maxlength="4" class="w-full parchment-input rounded px-4 py-3 tracking-widest"></div>
                                 </div>
-                                <div><label class="block text-xs text-[#5A3A18] tracking-widest uppercase mb-2 font-bold">Name on Card *</label><input type="text" id="f-cardname" required placeholder="HARRY J POTTER" class="w-full parchment-input rounded px-4 py-3 uppercase tracking-widest"></div>
+                                <div><label class="block text-xs text-gray-400 tracking-widest uppercase mb-2 font-bold">Name on Card *</label><input type="text" id="f-cardname" required placeholder="HARRY J POTTER" class="w-full parchment-input rounded px-4 py-3 uppercase tracking-widest"></div>
                             </div>
                         </div>
 
@@ -235,14 +248,13 @@
         </div>
     </div>
 
-    <footer class="relative z-10 border-t border-white/10 bg-[#030303]/80 backdrop-blur-md">
+    <footer class="section-glass relative z-10 border-t border-white/10 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-6 md:px-12 py-16 text-center">
             <p class="font-montserrat text-gray-500 text-xs tracking-wider uppercase font-light">© 2026 Hogwarts Enchanted Experience. All rights reserved.</p>
         </div>
     </footer>
 
-    <audio id="bg-music" src="assets/HARRY.mp3" loop preload="auto"></audio>
-    <button id="music-btn" title="Toggle Music" aria-label="Toggle Music" class="fixed bottom-6 right-6 z-[9998] btn-magic flex items-center justify-center w-12 h-12 rounded-full cursor-pointer">
+    <audio id="bg-music" src="assets/HARRY.mp3" loop preload="auto"Music" class="fixed bottom-6 right-6 z-[9998] btn-magic flex items-center justify-center w-12 h-12 rounded-full cursor-pointer">
         <span id="music-icon" class="text-lg">♪</span>
         <span id="music-label" class="hidden">MUSIC</span>
     </button>
@@ -254,6 +266,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+            
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 50
+            });
 
             // Refined Lenis for Buttery Feel Syncing with GSAP
             const lenis = new Lenis({ 
